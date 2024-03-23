@@ -12,6 +12,7 @@
 namespace Modules\Tenants\App\Models\Stats;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Tenants\App\Models\Customer\CustomerDomain;
 
 class SessionDataGoogle extends Model
 {
@@ -48,7 +49,9 @@ class SessionDataGoogle extends Model
      */
 
     // Example relationship
-    // public function domain() {
-    //     return $this->belongsTo(Domain::class, 'associated_domain_id');
-    // }
+    public function customerDomain()
+    {
+        return $this->belongsTo(CustomerDomain::class, 'customer_id', 'customer_id')
+            ->where('id', $this->associated_domain_id);
+    }
 }

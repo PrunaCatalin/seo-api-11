@@ -57,17 +57,25 @@ class RouteServiceProvider extends ServiceProvider
                 ->domain($domain)
                 ->namespace($this->moduleNamespace)
                 ->group(function () use ($domain) {
-                    require module_path('Tenants', 'Routes/customer/auth.php');
-                    require module_path('Tenants', 'Routes/location/location.php');
+                    require module_path('Tenants', 'routes/customer/auth.php');
+                    require module_path('Tenants', 'routes/location/location.php');
                     Route::middleware(['auth:sanctum'])
                         ->prefix('customer')
                         ->domain($domain)
                         ->namespace($this->moduleNamespace)
-                        ->group(function () use ($domain) {
-                            require module_path('Tenants', 'Routes/customer/customer.php');
+                        ->group(function () use ($domain) { // only logged customer
+                            require module_path('Tenants', 'routes/customer/customer.php');
+                            require module_path('Tenants', 'routes/stats/stats.php');
+                        });
+                    Route::middleware(['auth:sanctum'])
+                        ->prefix('stats')
+                        ->domain($domain)
+                        ->namespace($this->moduleNamespace)
+                        ->group(function () use ($domain) { // only logged customer
+                            require module_path('Tenants', 'routes/stats/stats.php');
                         });
                 });
-        };
+        }
     }
 
     /**

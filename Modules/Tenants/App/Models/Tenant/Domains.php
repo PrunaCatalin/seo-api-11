@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Tenants\App\Models\Tenants;
+namespace Modules\Tenants\App\Models\Tenant;
 
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Domains extends Model
 {
-    use HasFactory;
 
     /**
      * The database table used by the model.
@@ -82,7 +81,7 @@ class Domains extends Model
     /**
      * Indicates if the model should be timestamped.
      *
-     * @var boolean
+     * @var bool
      */
     public $timestamps = true;
 
@@ -93,12 +92,12 @@ class Domains extends Model
 
     private function isSslAttribute(): string
     {
-        return ($this->attributes['is_ssl'] === 1) ? "https" : "http";
+        return ($this->attributes['is_ssl'] === 1) ? 'https' : 'http';
     }
 
     public function scopeFullUrl(): string
     {
-        return $this->isSslAttribute() . "://www." . $this->attributes['domain'] . "/";
+        return $this->isSslAttribute() . '://www.' . $this->attributes['domain'] . '/';
     }
     // Scopes...
 
@@ -117,6 +116,6 @@ class Domains extends Model
     // Relations ...
     public function tenant()
     {
-        return $this->hasOne(Tenants::class, "tenant_id", "id");
+        return $this->hasOne(Tenants::class, 'tenant_id', 'id');
     }
 }

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Modules\Tenants\App\Models\Stats\SessionDataGoogle;
 
 class CustomerDomain extends Model
 {
@@ -23,7 +24,8 @@ class CustomerDomain extends Model
     use HasFactory;
 
     // Enable soft deletes for the model
-
+    // Explicitly define the connection name if it's not the default connection
+    protected $connection = 'mysql';
     /**
      * The table associated with the model.
      *
@@ -64,6 +66,11 @@ class CustomerDomain extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function sessionData()
+    {
+        return $this->hasMany(SessionDataGoogle::class, 'associated_domain_id', 'id');
     }
 
     public function getDailyStatsRecords()

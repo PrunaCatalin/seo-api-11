@@ -84,7 +84,7 @@ return [
                 'password' => env('DB_PASSWORD_MASTER_STATS', ''),
             ],
 
-            'database' => env('DB_DATABASE', 'laravel'),
+            'database' => env('DB_DATABASE_STATS', 'laravel'),
 
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
@@ -182,7 +182,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [
