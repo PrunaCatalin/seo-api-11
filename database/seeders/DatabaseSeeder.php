@@ -9,9 +9,12 @@ use Database\Seeders\Customer\CustomerCompanySeeder;
 use Database\Seeders\Customer\CustomerDetailsSeeder;
 use Database\Seeders\Customer\CustomerDomainSeeder;
 use Database\Seeders\Customer\CustomerSeeder;
+use Database\Seeders\Customer\CustomerSubscriptionPlanTableSeeder;
 use Database\Seeders\Location\GenericCitiesSeeder;
 use Database\Seeders\Location\GenericCountiesSeeder;
 use Database\Seeders\Location\GenericCountriesSeeder;
+use Database\Seeders\Subscription\SubscriptionPlanDetailsTableSeeder;
+use Database\Seeders\Subscription\SubscriptionPlansTableSeeder;
 use Database\Seeders\Tenant\TenantConfigurationSeeder;
 use Database\Seeders\Tenant\TenantSeeder;
 use Database\Seeders\User\UserPermissionSeeder;
@@ -30,7 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TenantSeeder::class);
         $this->call(RolesAndPermissionsSeeder::class);
 //        $this->call(WdApplicationLinksSeeder::class);
-        $this->call(TenantConfigurationSeeder::class);
+//        $this->call(TenantConfigurationSeeder::class);
         $this->call(AppConfigSeeder::class);
 
         $this->call(UserSeeder::class);
@@ -49,6 +52,11 @@ class DatabaseSeeder extends Seeder
             CustomerCompanySeeder::class,
             CustomerDetailsSeeder::class,
             CustomerDomainSeeder::class,
+        ]);
+        $this->call([
+            SubscriptionPlansTableSeeder::class,
+            SubscriptionPlanDetailsTableSeeder::class,
+            CustomerSubscriptionPlanTableSeeder::class,
         ]);
     }
 }

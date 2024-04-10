@@ -11,10 +11,17 @@
 
 namespace Modules\Tenants\App\Services\Customer;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+
+use LaravelIdea\Helper\Modules\Tenants\App\Models\Customer\_IH_Customer_C;
+use LaravelIdea\Helper\Modules\Tenants\App\Models\Customer\_IH_Customer_QB;
 use Modules\Tenants\App\Contracts\CrudMicroService;
 use Modules\Tenants\App\Emails\CustomerResetPassword;
 use Modules\Tenants\App\Exceptions\ServiceException;
@@ -52,11 +59,28 @@ class CustomerService implements CrudMicroService
     }
 
     /**
+     * @param int $id
+     * @return Customer|Customer[]
+     * @throws ServiceException
+     */
+    public function find(int $id)
+    {
+        $user = Customer::with(['customerDetails', 'customerCompany', 'customerAddresses'])->find($id);
+        if (!$user) {
+            throw new ServiceException('Email is not found', []);
+        }
+        return $user;
+    }
+
+    /**
      * @throws ServiceException
      */
     public function login(array $data)
     {
-        $user = Customer::with('customerDetails')->where('email', $data['email'])->first();
+        $user = Customer::with(['customerDetails', 'customerCompany', 'customerAddresses', 'referralsMade'])->where(
+            'email',
+            $data['email']
+        )->first();
         if (!$user) {
             throw new ServiceException('Email is not found', []);
         } else {
@@ -68,6 +92,7 @@ class CustomerService implements CrudMicroService
                 $user->tokens()->where('tokenable_id', $user->id)->delete();
                 // cleanup old tokens
                 $user->token = $user->createAuthToken('WD-Auth')->plainTextToken;
+                $user->current_plan = $user->currentPlan();
                 return $user;
             } else {
                 throw new ServiceException('Email password is wrong', []);

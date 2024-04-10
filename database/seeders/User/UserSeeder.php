@@ -17,10 +17,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         //
-        $primaryDomain = [
-            Str::slug(env('APP_HOSTNAME'), ''),
-        ];
-        $domain = Str::slug(env('APP_HOSTNAME'), '');
+        $domain = Str::slug(config('app.appHostNameTenant'), '');
         User::insert([
             'tenant_id' => $domain,
             'name' => 'Catalin Pruna new',

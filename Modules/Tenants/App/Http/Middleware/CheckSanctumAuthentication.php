@@ -15,7 +15,7 @@ class CheckSanctumAuthentication
     {
         if (Str::startsWith($request->getRequestUri(), '/api/v1/admin/')) {
             config(['sanctum.guard' => 'admin']);
-        } elseif (Str::startsWith($request->getRequestUri(), '/api/v1/customer/')) {
+        } elseif (Str::startsWith($request->getRequestUri(), '/api/v1/')) {
             config(['sanctum.guard' => 'customer']);
         }
         return $next($request);

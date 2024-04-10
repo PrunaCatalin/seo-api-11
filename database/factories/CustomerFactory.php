@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Tenants\App\Models\Customer\Customer;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @extends Factory<\App\Models\Customer>
@@ -23,8 +24,9 @@ class CustomerFactory extends Factory
         return [
             'email' => fake()->unique()->safeEmail,
             'email_verified_at' => fake()->dateTime(),
-            'password' => bcrypt('password'), // presupunem o parolă generică pentru exemplu
-            'tenant_id' => 'seofronttest', // sau folosește un ID de tenant specific dacă este necesar
+            'password' => bcrypt('password'),
+            'tenant_id' => 'seofronttest',
+            'referral_id' => (string)Str::uuid(),
             'remember_token' => Str::random(10),
         ];
     }

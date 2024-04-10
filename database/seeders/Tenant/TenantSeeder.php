@@ -16,11 +16,12 @@ class TenantSeeder extends Seeder
     public function run()
     {
         //
-        $primaryDomain = env('APP_HOSTNAME');
+        $primaryDomain = config('app.appHostNameTenant');
+        
         $tenant = Tenant::firstOrCreate(['id' => Str::slug($primaryDomain, '')]);
         $tenant->domains()->create(['domain' => $primaryDomain, 'is_active' => 1]);
 
-        $primaryDomain = env('APP_HOSTNAME_TENANT_TEST');
+        $primaryDomain = config('app.appHostNameTenantTest');
         $tenant = Tenant::firstOrCreate(['id' => Str::slug($primaryDomain, '')]);
         $tenant->domains()->create(['domain' => $primaryDomain, 'is_active' => 1]);
     }

@@ -18,6 +18,15 @@
 
 
 use Modules\Tenants\App\Http\Controllers\Customer\CustomerController;
+use Modules\Tenants\App\Http\Controllers\Customer\WalletController;
+
 Route::name('customer.')->group(function () {
+    //customer
+    Route::get('details', [CustomerController::class, 'info'])->name('view.details');
+    
+    //contact
     Route::post('contact', [CustomerController::class, 'sendContact'])->name('action.contact');
+
+    //wallet
+    Route::get('wallet', [WalletController::class, 'index'])->name('view.wallet');
 });

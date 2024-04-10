@@ -51,31 +51,32 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes(): void
     {
-        foreach ($this->centralDomains() as $domain) {
-            Route::prefix('api/v1')
-                ->middleware(['api', 'identifyTenant'])
-                ->domain($domain)
-                ->namespace($this->moduleNamespace)
-                ->group(function () use ($domain) {
-                    require module_path('Tenants', 'routes/customer/auth.php');
-                    require module_path('Tenants', 'routes/location/location.php');
-                    Route::middleware(['auth:sanctum'])
-                        ->prefix('customer')
-                        ->domain($domain)
-                        ->namespace($this->moduleNamespace)
-                        ->group(function () use ($domain) { // only logged customer
-                            require module_path('Tenants', 'routes/customer/customer.php');
-                            require module_path('Tenants', 'routes/stats/stats.php');
-                        });
-                    Route::middleware(['auth:sanctum'])
-                        ->prefix('stats')
-                        ->domain($domain)
-                        ->namespace($this->moduleNamespace)
-                        ->group(function () use ($domain) { // only logged customer
-                            require module_path('Tenants', 'routes/stats/stats.php');
-                        });
-                });
-        }
+//        foreach ($this->centralDomains() as $domain) {
+        $domain = config('app.appHostNameTenant');
+        Route::prefix('api/v1')
+            ->middleware(['api', 'identifyTenant'])
+            ->domain($domain)
+            ->namespace($this->moduleNamespace)
+            ->group(function () use ($domain) {
+                require module_path('Tenants', 'routes/customer/auth.php');
+                require module_path('Tenants', 'routes/location/location.php');
+                Route::middleware(['auth:sanctum'])
+                    ->prefix('customer')
+                    ->domain($domain)
+                    ->namespace($this->moduleNamespace)
+                    ->group(function () use ($domain) { // only logged customer
+                        require module_path('Tenants', '/routes/subscription/subscription.php');
+                        require module_path('Tenants', 'routes/customer/customer.php');
+                    });
+                Route::middleware(['auth:sanctum'])
+                    ->prefix('stats')
+                    ->domain($domain)
+                    ->namespace($this->moduleNamespace)
+                    ->group(function () use ($domain) { // only logged customer
+                        require module_path('Tenants', 'routes/stats/stats.php');
+                    });
+            });
+//        }
     }
 
     /**

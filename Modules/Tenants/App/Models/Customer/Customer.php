@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authentication;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
+use Modules\Tenants\App\Services\Customer\WalletService;
 use Stancl\Tenancy\Database\Models\Tenant;
 
 /**
@@ -60,8 +64,10 @@ class Customer extends Authentication
         'email_verified_at',
         'password',
         'tenant_id',
+        'referral_id',
         'remember_token'
     ];
+
 
     public static function newFactory()
     {
@@ -72,6 +78,10 @@ class Customer extends Authentication
     {
         parent::boot();
         static::addGlobalScope(app(TenantScope::class));
+
+        static::creating(function ($model) {
+            $model->referral_id = 'TRFP-' . strtoupper(Str::random(10)) . '-' . time();
+        });
     }
 
     public function tenant()
@@ -103,4 +113,35 @@ class Customer extends Authentication
     {
         return $this->hasMany(CustomerDomain::class);
     }
+
+    /**
+     * The referrals made by this customer.
+     */
+    public function referralsMade()
+    {
+        return $this->hasMany(CustomerReferral::class, 'referrer_id');
+    }
+
+    /**
+     * The referrals where this customer was referred.
+     */
+    public function referralsReceived()
+    {
+        return $this->hasMany(CustomerReferral::class, 'referred_id');
+    }
+
+    public function subscriptionPlans()
+    {
+        return $this->belongsToMany(SubscriptionPlan::class, 'customer_subscription_plan')
+            ->using(CustomerSubscriptionPlan::class)
+            ->withTimestamps();
+    }
+
+    public function currentPlan()
+    {
+        return $this->subscriptionPlans()
+            ->wherePivot('is_active', true)
+            ->first();
+    }
+
 }

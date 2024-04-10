@@ -34,6 +34,22 @@ class CustomerController extends Controller
     ) {
     }
 
+    public function info()
+    {
+        try {
+            $customer = $this->customerService->find(auth('customer')->user()->id);
+            return response()->json([
+                'status' => 'success',
+                'info' => $customer
+            ]);
+        } catch (ServiceException $e) {
+            return response()->json([
+                'status' => false,
+                'errors' => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * @param ContactRequest $request
      * @return JsonResponse

@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('tenant_id')->comment('Fk -> tenant (tenant relation)');
             $table->foreign('tenant_id')->references('id')->on('tenants');
+            $table->string('referral_id')->comment('customer referral ID');
             $table->string('email')->comment('customer email');
             $table->timestamp('email_verified_at')->nullable()->comment('customer date email was verified');
             $table->string('password')->comment('customer password');
