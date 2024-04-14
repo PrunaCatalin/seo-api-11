@@ -15,6 +15,7 @@
         "nwidart/laravel-modules": "^10.0",
         "spatie/laravel-permission": "^6.4",
         "stancl/tenancy": "^3.8",
+        "symfony/dom-crawler": "^7.0",
         "valorin/random": "^0.5.0"
     },
     "require-dev": {

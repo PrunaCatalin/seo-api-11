@@ -39,7 +39,7 @@ class CustomerDetails extends Model
 
     protected $casts = [
         'customer_id' => 'int',
-        'gender' => 'bool'
+        'gender' => 'int'
     ];
 
     protected $fillable = [
