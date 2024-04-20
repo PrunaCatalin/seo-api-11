@@ -16,10 +16,9 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        //
         $domain = Str::slug(config('app.appHostNameTenant'), '');
+        //
         User::insert([
-            'tenant_id' => $domain,
             'name' => 'Catalin Pruna new',
             'email' => $domain . '@yahoo.com',
             'password' => Hash::make('password')

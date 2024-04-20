@@ -69,6 +69,13 @@ class RouteServiceProvider extends ServiceProvider
                         require module_path('Tenants', 'routes/customer/customer.php');
                     });
                 Route::middleware(['auth:sanctum'])
+                    ->prefix('payments')
+                    ->domain($domain)
+                    ->namespace($this->moduleNamespace)
+                    ->group(function () use ($domain) { // only logged customer
+                        require module_path('Tenants', '/routes/payments/payment.php');
+                    });
+                Route::middleware(['auth:sanctum'])
                     ->prefix('stats')
                     ->domain($domain)
                     ->namespace($this->moduleNamespace)

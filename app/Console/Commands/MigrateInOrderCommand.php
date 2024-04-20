@@ -64,7 +64,7 @@ class MigrateInOrderCommand extends Command
 //            "database/migrations/slider/.*",
             'database/migrations/category/.*',
             'database/migrations/product/.*',
-//            "database/migrations/filters/.*",
+            'database/migrations/payment/.*',
             'database/migrations/subscription/.*',
             'database/migrations/customer/.*',
             'database/migrations/admin/.*',

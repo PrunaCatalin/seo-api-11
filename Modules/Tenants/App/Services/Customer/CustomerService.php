@@ -44,10 +44,36 @@ class CustomerService implements CrudMicroService
 
     /**
      * @inheritDoc
+     * @throws ServiceException
      */
-    public function update(array $data)
+    public function update(array $data, int $customerId = 0, string $type = 'profile')
     {
-        // TODO: Implement update() method.
+        try {
+            $customer = $this->find($customerId);
+            if ($type == 'profile') {
+                return $customer->customerDetails->update($data);
+            } else {
+                if ($type == 'addresses') {
+                    foreach ($data as $addressData) {
+                        if (isset($addressData['id'])) {
+                            $address = $customer->customerAddresses()->find($addressData['id']);
+                            if ($address) {
+                                $address->update($addressData);
+                            } else {
+                                return response()->json(['message' => 'Address not found'], 404);
+                            }
+                        } else {
+                            $customer->customerAddresses()->create($addressData);
+                        }
+                    }
+                } else {
+                }
+            }
+        } catch (ServiceException $exception) {
+            throw new ServiceException('Customer is not found', []);
+        }
+
+        return false;
     }
 
     /**
@@ -65,9 +91,9 @@ class CustomerService implements CrudMicroService
      */
     public function find(int $id)
     {
-        $user = Customer::with(['customerDetails', 'customerCompany', 'customerAddresses'])->find($id);
+        $user = Customer::with(['customerDetails'])->find($id);
         if (!$user) {
-            throw new ServiceException('Email is not found', []);
+            throw new ServiceException('Customer is not found', []);
         }
         return $user;
     }
@@ -77,7 +103,7 @@ class CustomerService implements CrudMicroService
      */
     public function login(array $data)
     {
-        $user = Customer::with(['customerDetails', 'customerCompany', 'customerAddresses', 'referralsMade'])->where(
+        $user = Customer::with(['customerDetails', 'referralsMade'])->where(
             'email',
             $data['email']
         )->first();

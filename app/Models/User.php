@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\HasApiTokensTrait;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Modules\Admin\Entities\Users\UsersDetails;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokensTrait;
     use HasFactory;
@@ -54,13 +53,19 @@ class User extends Authenticatable
         ];
     }
 
-    public function userDetails(): HasOne
-    {
-        return $this->hasOne(UsersDetails::class, 'user_id', 'id');
-    }
 
     public function queues()
     {
         return $this->belongsToMany(Queue::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasRole(['admin', 'moderator']);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

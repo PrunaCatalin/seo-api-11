@@ -21,6 +21,7 @@ namespace Modules\Tenants\App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Modules\Tenants\App\Http\Requests\Customer\ContactRequest;
+use Modules\Tenants\App\Http\Requests\Customer\UpdateProfileRequest;
 use Modules\Tenants\App\Models\Customer\Customer;
 use Modules\Tenants\App\Services\Customer\CustomerContactService;
 use Modules\Tenants\App\Services\Customer\CustomerService;
@@ -37,13 +38,37 @@ class CustomerController extends Controller
     public function info()
     {
         try {
-            $customer = $this->customerService->find(auth('customer')->user()->id);
-            return response()->json([
+            $customer = $this->customerService->find(id: auth('customer')->user()->id);
+            return response()->json(data: [
                 'status' => 'success',
                 'info' => $customer
             ]);
         } catch (ServiceException $e) {
-            return response()->json([
+            return response()->json(data: [
+                'status' => false,
+                'errors' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function addresses()
+    {
+    }
+
+    public function updateProfile(UpdateProfileRequest $updateProfileRequest)
+    {
+        try {
+            $customer = $this->customerService->update(
+                data: $updateProfileRequest->validated(),
+                customerId: auth('customer')->user()->id,
+                type: 'profile'
+            );
+            return response()->json(data: [
+                'status' => 'success',
+                'info' => $customer
+            ]);
+        } catch (ServiceException $e) {
+            return response()->json(data: [
                 'status' => false,
                 'errors' => $e->getMessage()
             ]);
@@ -58,17 +83,20 @@ class CustomerController extends Controller
     {
         $request = $request->validated();
         try {
-            $this->customerContactService->sendContact([
-                'subject' => $request['subject'],
-                'message' => $request['message']
-            ], Customer::with('customerDetails')->find(auth('sanctum')->user()->id));
+            $this->customerContactService->sendContact(
+                data: [
+                    'subject' => $request['subject'],
+                    'message' => $request['message']
+                ],
+                customer: Customer::with('customerDetails')->find(id: auth('sanctum')->user()->id)
+            );
         } catch (ServiceException $e) {
-            return response()->json([
+            return response()->json(data: [
                 'status' => false,
                 'errors' => $e->getMessage()
             ]);
         }
-        return response()->json([
+        return response()->json(data: [
             'status' => true
         ]);
     }

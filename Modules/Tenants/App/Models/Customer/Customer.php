@@ -15,10 +15,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authentication;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Laravel\Cashier\Billable;
 use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
-use Modules\Tenants\App\Services\Customer\WalletService;
 use Stancl\Tenancy\Database\Models\Tenant;
 
 /**
@@ -43,6 +42,7 @@ use Stancl\Tenancy\Database\Models\Tenant;
  */
 class Customer extends Authentication
 {
+    use Billable;
     use SoftDeletes;
     use HasFactory;
     use HasApiTokensTrait;

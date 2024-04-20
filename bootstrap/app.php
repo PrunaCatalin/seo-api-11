@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            'stripe/*',
+            'paddle/*'
+        ]);
         $middleware->alias([
             'json.response' => ForceJsonResponse::class,
             'identifyTenant' => IdentifyTenant::class,

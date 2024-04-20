@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name')->comment('The name of the subscription plan');
             $table->decimal('points', 8, 2)->comment('The points of the subscription plan');
             $table->decimal('points_annually', 8, 2)->comment('The points / year of the subscription plan');
-            $table->string('frequency')->comment('Subscription frequency: monthly or annually');
+            $table->string('frequency')->default('monthly')->comment('Subscription frequency: monthly or annually');
             $table->text('description')->nullable()->comment('A brief description of the subscription plan');
             $table->decimal('rate')->default(9.99)->comment('Rate limit of total points');
             $table->boolean('is_popular')->default(0)->comment('Plan is popular');

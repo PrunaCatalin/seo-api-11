@@ -10,12 +10,14 @@
 
 namespace Modules\Tenants\App\Models\Subscription;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Tenants\App\Models\Customer\Customer;
 use Modules\Tenants\App\Models\Customer\CustomerSubscriptionPlan;
 
 class SubscriptionPlan extends Model
 {
+
     protected $fillable = ['name', 'points', 'frequency', 'description', 'details', 'is_popular', 'points_annually'];
     protected $hidden = ['rate', 'is_active'];
 
@@ -26,6 +28,7 @@ class SubscriptionPlan extends Model
     {
         return $this->hasMany(SubscriptionPlanDetail::class);
     }
+
 
     public function customers()
     {

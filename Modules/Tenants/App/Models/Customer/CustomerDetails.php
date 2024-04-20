@@ -35,6 +35,7 @@ class CustomerDetails extends Model
     use HasFactory;
 
     protected $table = 'customer_details';
+    protected $primaryKey = 'customer_id';
     public $incrementing = false;
 
     protected $casts = [
