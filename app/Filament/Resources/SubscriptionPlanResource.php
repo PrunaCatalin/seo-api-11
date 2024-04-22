@@ -43,6 +43,7 @@ class SubscriptionPlanResource extends Resource
                         Section::make('States')->schema([
                             Forms\Components\Radio::make('is_active')->boolean()->default(false)->inline(),
                             Forms\Components\Radio::make('is_popular')->boolean()->default(false)->inline(),
+                            Forms\Components\Radio::make('is_demo')->boolean()->default(false)->inline(),
                         ])->columns(2),
                         Textarea::make('description')->required(),
 
@@ -63,6 +64,7 @@ class SubscriptionPlanResource extends Resource
                 Tables\Columns\TextColumn::make('rate')->searchable(),
                 Tables\Columns\IconColumn::make('is_popular')->boolean()->searchable(),
                 Tables\Columns\IconColumn::make('is_active')->boolean()->searchable(),
+                Tables\Columns\IconColumn::make('is_demo')->boolean()->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

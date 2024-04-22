@@ -18,7 +18,7 @@ class CustomerDomainFactory extends Factory
     {
         return [
             'customer_id' => Customer::factory(),
-            'domain' => fake()->domainName,
+            'domain' => time() . fake()->domainName,
             'tenant_id' => 'seofronttest',
         ];
     }

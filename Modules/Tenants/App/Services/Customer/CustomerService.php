@@ -24,6 +24,7 @@ use LaravelIdea\Helper\Modules\Tenants\App\Models\Customer\_IH_Customer_C;
 use LaravelIdea\Helper\Modules\Tenants\App\Models\Customer\_IH_Customer_QB;
 use Modules\Tenants\App\Contracts\CrudMicroService;
 use Modules\Tenants\App\Emails\CustomerResetPassword;
+use Modules\Tenants\App\Enums\Customer\CustomerAccountStatus;
 use Modules\Tenants\App\Exceptions\ServiceException;
 use Modules\Tenants\App\Models\Customer\Customer;
 
@@ -110,18 +111,26 @@ class CustomerService implements CrudMicroService
         if (!$user) {
             throw new ServiceException('Email is not found', []);
         } else {
-            $user->nameLetters = 'N/A';
-            if (preg_match_all('/(?<=\s|^)\w/iu', ucwords(strtolower($user->name)), $matches)) {
-                $user->nameLetters = implode('', $matches[0]);
-            }
-            if (Hash::check($data['password'], $user->password)) {
-                $user->tokens()->where('tokenable_id', $user->id)->delete();
-                // cleanup old tokens
-                $user->token = $user->createAuthToken('WD-Auth')->plainTextToken;
-                $user->current_plan = $user->currentPlan();
-                return $user;
+            if ($user->account_status == CustomerAccountStatus::BLOCKED->value) {
+                throw new ServiceException('Account is blocked', []);
             } else {
-                throw new ServiceException('Email password is wrong', []);
+                if ($user->account_status == CustomerAccountStatus::PENDING->value) {
+                    throw new ServiceException('Account need to be activated', []);
+                } else {
+                    $user->nameLetters = 'N/A';
+                    if (preg_match_all('/(?<=\s|^)\w/iu', ucwords(strtolower($user->name)), $matches)) {
+                        $user->nameLetters = implode('', $matches[0]);
+                    }
+                    if (Hash::check($data['password'], $user->password)) {
+                        $user->tokens()->where('tokenable_id', $user->id)->delete();
+                        // cleanup old tokens
+                        $user->token = $user->createAuthToken('WD-Auth')->plainTextToken;
+                        $user->current_plan = $user->currentPlan();
+                        return $user;
+                    } else {
+                        throw new ServiceException('Email password is wrong', []);
+                    }
+                }
             }
         }
     }

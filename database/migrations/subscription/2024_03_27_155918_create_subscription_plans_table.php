@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->decimal('rate')->default(9.99)->comment('Rate limit of total points');
             $table->boolean('is_popular')->default(0)->comment('Plan is popular');
             $table->boolean('is_active')->nullable()->comment('Is active or not');
+            $table->boolean('is_demo')->default(0)->comment('Is demo or not');
             $table->timestamps();
             $table->softDeletes();
         });

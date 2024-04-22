@@ -25,9 +25,10 @@ class SubscriptionPlansController extends Controller
         $cacheKey = 'subscription_plans';
 
         // Attempt to retrieve the wallet data from the cache
-        $plans = Cache::remember($cacheKey, 3600, function () {
-            return SubscriptionPlan::isActive()->with('details')->get();
-        });
+
+        $customer = auth('sanctum')->user()->id;
+        $plans = SubscriptionPlan::isActive()->hasNeverBeenDemoForCustomer($customer)->with('details')->get();
+
         return response()->json([
             'status' => 'success',
             'response' => $plans

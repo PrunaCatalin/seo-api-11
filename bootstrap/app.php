@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Log;
+use Modules\Tenants\App\Http\Middleware\CheckAccountStatusMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'json.response' => ForceJsonResponse::class,
             'identifyTenant' => IdentifyTenant::class,
+            'check-account-status' => CheckAccountStatusMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

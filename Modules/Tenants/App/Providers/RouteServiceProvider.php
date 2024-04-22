@@ -60,7 +60,7 @@ class RouteServiceProvider extends ServiceProvider
             ->group(function () use ($domain) {
                 require module_path('Tenants', 'routes/customer/auth.php');
                 require module_path('Tenants', 'routes/location/location.php');
-                Route::middleware(['auth:sanctum'])
+                Route::middleware(['auth:sanctum', 'check-account-status'])
                     ->prefix('customer')
                     ->domain($domain)
                     ->namespace($this->moduleNamespace)
@@ -68,14 +68,14 @@ class RouteServiceProvider extends ServiceProvider
                         require module_path('Tenants', '/routes/subscription/subscription.php');
                         require module_path('Tenants', 'routes/customer/customer.php');
                     });
-                Route::middleware(['auth:sanctum'])
+                Route::middleware(['auth:sanctum', 'check-account-status'])
                     ->prefix('payments')
                     ->domain($domain)
                     ->namespace($this->moduleNamespace)
                     ->group(function () use ($domain) { // only logged customer
                         require module_path('Tenants', '/routes/payments/payment.php');
                     });
-                Route::middleware(['auth:sanctum'])
+                Route::middleware(['auth:sanctum', 'check-account-status'])
                     ->prefix('stats')
                     ->domain($domain)
                     ->namespace($this->moduleNamespace)

@@ -28,7 +28,7 @@ class DetailsRelationManager extends RelationManager
                     ->afterStateUpdated(function (Set $set, $state) {
                         $set('key', Str::slug($state));
                     }),
-                TextInput::make('key')->disabled()->required()->maxLength(255),
+                TextInput::make('key')->readOnly()->required()->maxLength(255),
                 TextInput::make('value')->required()->maxLength(255)
             ]);
     }

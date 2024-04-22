@@ -20,10 +20,12 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use Modules\Tenants\App\Enums\Customer\CustomerAccountStatus;
 use Modules\Tenants\App\Models\Customer\Customer;
 
 class CustomerResource extends Resource
@@ -58,9 +60,42 @@ class CustomerResource extends Resource
                             TextInput::make('password_confirmation')
                                 ->password()->required(
                                     fn(Page $livewire) => ($livewire instanceof CreateRecord)
-                                )
+                                ),
+                            Select::make('account_status')
+                                ->options([
+                                    CustomerAccountStatus::OPEN->value => CustomerAccountStatus::OPEN->name,
+                                    CustomerAccountStatus::PENDING->value => CustomerAccountStatus::PENDING->name,
+                                    CustomerAccountStatus::BLOCKED->value => CustomerAccountStatus::BLOCKED->name,
+                                ])->default(CustomerAccountStatus::OPEN->value)
+                                ->required(),
                         ])->columns(2),
                         Tab::make('Personal Details')->schema([
+                            Fieldset::make('Details')
+                                ->relationship('customerDetails')
+                                ->schema([
+                                    TextInput::make('name')
+                                        ->label('Name')
+                                        ->required()
+                                        ->maxLength(255),
+                                    TextInput::make('lastname')
+                                        ->label('Last Name')
+                                        ->required()
+                                        ->maxLength(255),
+                                    TextInput::make('phone')
+                                        ->label('Phone')
+                                        ->required()
+                                        ->maxLength(255),
+                                    DatePicker::make('date_of_birth')
+                                        ->label('Date Of birth')
+                                        ->required(),
+                                    Select::make('gender')
+                                        ->label('Gender')
+                                        ->options(['0' => 'Male', '1' => 'Female'])
+                                        ->required()
+                                ])
+
+                        ])->columns(3),
+                        Tab::make('Financial information')->schema([
                             Fieldset::make('Details')
                                 ->relationship('customerDetails')
                                 ->schema([
@@ -110,6 +145,7 @@ class CustomerResource extends Resource
                     ->extraAttributes(['style' => 'max-width:260px'])
                     ->wrap(),
                 Tables\Columns\TextColumn::make('email')->searchable(isIndividual: true),
+                Tables\Columns\TextColumn::make('account_status'),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -119,6 +155,12 @@ class CustomerResource extends Resource
             ])
             ->filters([
                 //
+                SelectFilter::make('account_status')
+                    ->options([
+                        CustomerAccountStatus::OPEN->value => CustomerAccountStatus::OPEN->name,
+                        CustomerAccountStatus::PENDING->value => CustomerAccountStatus::PENDING->name,
+                        CustomerAccountStatus::BLOCKED->value => CustomerAccountStatus::BLOCKED->name,
+                    ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

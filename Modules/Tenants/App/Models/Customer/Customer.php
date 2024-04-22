@@ -65,7 +65,8 @@ class Customer extends Authentication
         'password',
         'tenant_id',
         'referral_id',
-        'remember_token'
+        'remember_token',
+        'account_status'
     ];
 
 
@@ -137,11 +138,13 @@ class Customer extends Authentication
             ->withTimestamps();
     }
 
+    
     public function currentPlan()
     {
         return $this->subscriptionPlans()
             ->wherePivot('is_active', true)
             ->first();
     }
+
 
 }

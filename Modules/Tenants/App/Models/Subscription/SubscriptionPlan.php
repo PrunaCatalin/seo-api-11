@@ -12,13 +12,40 @@ namespace Modules\Tenants\App\Models\Subscription;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Modules\Tenants\App\Models\Customer\Customer;
 use Modules\Tenants\App\Models\Customer\CustomerSubscriptionPlan;
 
 class SubscriptionPlan extends Model
 {
 
-    protected $fillable = ['name', 'points', 'frequency', 'description', 'details', 'is_popular', 'points_annually'];
+    protected $fillable = [
+        'name',
+        'points',
+        'frequency',
+        'description',
+        'details',
+        'is_popular',
+        'points_annually',
+        'is_demo'
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        // Re-cache the new wallet data if necessary
+        // Here you might want to repopulate the cache with fresh data
+        // For example:
+        static::saved(function ($customerPlan) {
+            $cacheKey = 'subscription_plans';
+            Cache::forget($cacheKey);
+        });
+        static::created(function ($customerPlan) {
+            $cacheKey = 'subscription_plans';
+            Cache::forget($cacheKey);
+        });
+    }
+
     protected $hidden = ['rate', 'is_active'];
 
     /**
@@ -35,6 +62,14 @@ class SubscriptionPlan extends Model
         return $this->belongsToMany(Customer::class, 'customer_subscription_plan')
             ->using(CustomerSubscriptionPlan::class)
             ->withTimestamps();
+    }
+
+    public function scopeHasNeverBeenDemoForCustomer($query, $customerId)
+    {
+        return $query->whereDoesntHave('customers', function ($query) use ($customerId) {
+            $query->where('customer_id', $customerId)
+                ->where('is_demo', true);
+        });
     }
 
     public function scopeIsActive()
