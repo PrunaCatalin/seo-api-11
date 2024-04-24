@@ -11,6 +11,7 @@
 namespace Modules\Tenants\App\Services\Customer;
 
 use Modules\Tenants\App\Contracts\CrudMicroService;
+use Modules\Tenants\App\Exceptions\ServiceException;
 use Modules\Tenants\App\Models\Customer\Customer;
 use Modules\Tenants\App\Models\Customer\CustomerSubscriptionPlan;
 use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
@@ -40,5 +41,43 @@ class WalletService implements CrudMicroService
     public function getWallet(Customer $customer): SubscriptionPlan
     {
         return $customer->currentPlan();
+    }
+
+    /**
+     * Adds credits to the customer's account.
+     *
+     * @param Customer $customer
+     * @param int $credits
+     * @throws ServiceException
+     */
+    public function addCredits(Customer $customer, int $credits): void
+    {
+        if ($credits < 0) {
+            throw new ServiceException('Credit amount must be positive.');
+        }
+
+        $customer->credits += $credits;
+        $customer->save();
+    }
+
+    /**
+     * Removes credits from the customer's account.
+     *
+     * @param Customer $customer
+     * @param int $credits
+     * @throws ServiceException
+     */
+    public function removeCredits(Customer $customer, int $credits): void
+    {
+        if ($credits < 0) {
+            throw new ServiceException('Credit amount must be positive.');
+        }
+
+        if ($customer->credits < $credits) {
+            throw new ServiceException('Insufficient credits.');
+        }
+
+        $customer->credits -= $credits;
+        $customer->save();
     }
 }

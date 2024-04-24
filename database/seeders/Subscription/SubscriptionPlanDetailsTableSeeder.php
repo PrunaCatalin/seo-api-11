@@ -59,6 +59,18 @@ class SubscriptionPlanDetailsTableSeeder extends Seeder
                 'key' => 'google_domain_selection',
                 'value' => 'Yes',
                 'name' => 'Google domain selection'
+            ],
+            [
+                'subscription_plan_id' => 4,
+                'key' => 'domains',
+                'value' => '1',
+                'name' => 'Domains'
+            ],
+            [
+                'subscription_plan_id' => 4,
+                'key' => 'total_traffic',
+                'value' => '100',
+                'name' => 'Total Traffic'
             ]
         ];
         SubscriptionPlanDetail::insert($details);

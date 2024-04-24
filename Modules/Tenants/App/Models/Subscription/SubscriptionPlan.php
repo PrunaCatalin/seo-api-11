@@ -26,24 +26,14 @@ class SubscriptionPlan extends Model
         'description',
         'details',
         'is_popular',
+        'is_demo',
+        'is_active',
         'points_annually',
-        'is_demo'
     ];
 
     protected static function boot()
     {
         parent::boot();
-        // Re-cache the new wallet data if necessary
-        // Here you might want to repopulate the cache with fresh data
-        // For example:
-        static::saved(function ($customerPlan) {
-            $cacheKey = 'subscription_plans';
-            Cache::forget($cacheKey);
-        });
-        static::created(function ($customerPlan) {
-            $cacheKey = 'subscription_plans';
-            Cache::forget($cacheKey);
-        });
     }
 
     protected $hidden = ['rate', 'is_active'];

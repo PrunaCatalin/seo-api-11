@@ -17,6 +17,7 @@ use Illuminate\Foundation\Auth\User as Authentication;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Cashier\Billable;
+use Modules\Tenants\App\Enums\Subscription\SubscriptionStatus;
 use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
 use Stancl\Tenancy\Database\Models\Tenant;
 
@@ -60,6 +61,7 @@ class Customer extends Authentication
     ];
 
     protected $fillable = [
+        'credits',
         'email',
         'email_verified_at',
         'password',
@@ -135,14 +137,21 @@ class Customer extends Authentication
     {
         return $this->belongsToMany(SubscriptionPlan::class, 'customer_subscription_plan')
             ->using(CustomerSubscriptionPlan::class)
-            ->withTimestamps();
+            ->withTimestamps()->withPivot(['frequency', 'ended_at', 'status']);
     }
 
-    
+
     public function currentPlan()
     {
         return $this->subscriptionPlans()
-            ->wherePivot('is_active', true)
+            ->wherePivot('status', '=', SubscriptionStatus::ACTIVE->value)
+            ->first();
+    }
+
+    public function nextPlan()
+    {
+        return $this->subscriptionPlans()
+            ->wherePivot('status', '=', SubscriptionStatus::PENDING->value)
             ->first();
     }
 

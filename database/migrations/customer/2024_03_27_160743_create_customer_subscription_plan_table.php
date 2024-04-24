@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Modules\Tenants\App\Enums\Subscription\SubscriptionStatus;
 
 return new class extends Migration {
     /**
@@ -17,6 +18,17 @@ return new class extends Migration {
                 'Foreign key linking to the subscription_plans table.'
             );
             $table->boolean('is_active')->default(true)->comment('Is active or not');
+            $table->enum('status', [
+                SubscriptionStatus::ACTIVE->value,
+                SubscriptionStatus::PENDING->value,
+                SubscriptionStatus::EXPIRED->value,
+                SubscriptionStatus::CANCELED->value,
+                SubscriptionStatus::CANCELED_BY_CLIENT->value
+            ])->default(SubscriptionStatus::PENDING->value);
+            $table->string('frequency')->default('monthly')->comment(
+                'Subscription frequency: monthly or annually'
+            );
+            $table->timestamp('ended_at')->comment('Subscription ended');
             $table->timestamps();
 
             // Define foreign key constraints and add comments for clarity

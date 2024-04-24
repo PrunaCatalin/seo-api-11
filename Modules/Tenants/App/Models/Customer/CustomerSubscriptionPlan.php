@@ -18,24 +18,10 @@ class CustomerSubscriptionPlan extends Pivot
 {
     // Define the table if it's not the default naming convention
     protected $table = 'customer_subscription_plan';
+    protected $fillable = ['is_active', 'frequency', 'ended_at', 'status'];
     protected $hidden = ['customer_id'];
+    protected $casts = [
+        'ended_at' => 'datetime'
+    ];
 
-    protected static function boot()
-    {
-        parent::boot();
-        // Re-cache the new wallet data if necessary
-        // Here you might want to repopulate the cache with fresh data
-        // For example:
-        static::saved(function ($customerPlan) {
-            $cacheKey = 'wallet_data_for_user_' . $customerPlan->customer_id;
-            Cache::forget($cacheKey);
-            $newWalletData = (new WalletService())->getWallet($customerPlan->customer_id);
-            Cache::put($cacheKey, $newWalletData, 3600);
-        });
-        static::created(function ($customerPlan) {
-            $cacheKey = 'wallet_data_for_user_' . $customerPlan->customer_id;
-            $newWalletData = (new WalletService())->getWallet($customerPlan->customer_id);
-            Cache::put($cacheKey, $newWalletData, 3600);
-        });
-    }
 }

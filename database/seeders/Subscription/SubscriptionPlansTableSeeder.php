@@ -44,6 +44,16 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'is_active' => 1,
                 'is_popular' => 0,
             ],
+            [
+                'name' => 'Demo',
+                'points' => 0,
+                'points_annually' => 0,
+                'frequency' => 'monthly',
+                'description' => 'A Demo subscription plan',
+                'rate' => 0,
+                'is_active' => 1,
+                'is_popular' => 0,
+            ],
         ]);
     }
 }

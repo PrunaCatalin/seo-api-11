@@ -6,6 +6,7 @@ use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers\CustomerCompanyRelationManager;
 use App\Filament\Resources\CustomerResource\RelationManagers\CustomerDomainsRelationManager;
 use App\Filament\Resources\CustomerResource\RelationManagers\ReferralsReceivedRelationManager;
+use App\Filament\Resources\CustomerResource\RelationManagers\SubscriptionPlanRelationManager;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
@@ -27,6 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Modules\Tenants\App\Enums\Customer\CustomerAccountStatus;
 use Modules\Tenants\App\Models\Customer\Customer;
+use Modules\Tenants\App\Services\Subscription\SubscriptionService;
 
 class CustomerResource extends Resource
 {
@@ -97,30 +99,62 @@ class CustomerResource extends Resource
                         ])->columns(3),
                         Tab::make('Financial information')->schema([
                             Fieldset::make('Details')
-                                ->relationship('customerDetails')
                                 ->schema([
-                                    TextInput::make('name')
-                                        ->label('Name')
-                                        ->required()
-                                        ->maxLength(255),
-                                    TextInput::make('lastname')
-                                        ->label('Last Name')
-                                        ->required()
-                                        ->maxLength(255),
-                                    TextInput::make('phone')
-                                        ->label('Phone')
-                                        ->required()
-                                        ->maxLength(255),
-                                    DatePicker::make('date_of_birth')
-                                        ->label('Date Of birth')
-                                        ->required(),
-                                    Select::make('gender')
-                                        ->label('Gender')
-                                        ->options(['0' => 'Male', '1' => 'Female'])
-                                        ->required()
+                                    Forms\Components\Placeholder::make('credits')
+                                        ->content(
+                                            fn(Customer $record): string => $record->credits
+                                        )->label('Credit'),
+                                    Forms\Components\Placeholder::make('current_plan')
+                                        ->content(
+                                            function (Customer $record): string {
+                                                $currentPlan = $record->currentPlan();
+                                                if ($currentPlan) {
+                                                    return $currentPlan->name . ' | ' .
+                                                        $currentPlan->pivot->frequency . ' | ' .
+                                                        (new SubscriptionService())
+                                                            ->calculateCredits(
+                                                                $currentPlan->pivot->frequency,
+                                                                $currentPlan->pivot->subscription_plan_id
+                                                            );
+                                                } else {
+                                                    return 'None';
+                                                }
+                                            }
+                                        )->label('Current Plan'),
+                                    Forms\Components\Placeholder::make('next_plan')
+                                        ->content(
+                                            function (Customer $record): string {
+                                                $nextPlan = $record->nextPlan();
+                                                if ($nextPlan) {
+                                                    return $nextPlan->name . ' | ' .
+                                                        $nextPlan->pivot->frequency . ' | ' .
+                                                        (new SubscriptionService())
+                                                            ->calculateCredits(
+                                                                $nextPlan->pivot->frequency,
+                                                                $nextPlan->pivot->subscription_plan_id
+                                                            );
+                                                } else {
+                                                    return 'None';
+                                                }
+                                            }
+                                        )
+                                        ->label('Next plan'),
+                                    Forms\Components\Placeholder::make('next_payment_day')
+                                        ->content(
+                                            function (Customer $record): string {
+                                                $nextPlan = $record->currentPlan();
+                                                if ($nextPlan) {
+                                                    return $nextPlan->pivot->ended_at;
+                                                } else {
+                                                    return 'None';
+                                                }
+                                            }
+                                        )
+                                        ->label('Next payment date'),
+
                                 ])
 
-                        ])->columns(3)
+                        ])->columns(2)
                     ])
                 ])->columns(1)
 
@@ -178,7 +212,9 @@ class CustomerResource extends Resource
         return [
             CustomerDomainsRelationManager::class,
             CustomerCompanyRelationManager::class,
-            ReferralsReceivedRelationManager::class
+            ReferralsReceivedRelationManager::class,
+            SubscriptionPlanRelationManager::class
+
 
         ];
     }
