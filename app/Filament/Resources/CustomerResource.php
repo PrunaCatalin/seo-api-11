@@ -7,6 +7,7 @@ use App\Filament\Resources\CustomerResource\RelationManagers\CustomerCompanyRela
 use App\Filament\Resources\CustomerResource\RelationManagers\CustomerDomainsRelationManager;
 use App\Filament\Resources\CustomerResource\RelationManagers\ReferralsReceivedRelationManager;
 use App\Filament\Resources\CustomerResource\RelationManagers\SubscriptionPlanRelationManager;
+use App\Filament\Resources\CustomerResource\RelationManagers\TransactionsRelationManager;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
@@ -213,7 +214,8 @@ class CustomerResource extends Resource
             CustomerDomainsRelationManager::class,
             CustomerCompanyRelationManager::class,
             ReferralsReceivedRelationManager::class,
-            SubscriptionPlanRelationManager::class
+            SubscriptionPlanRelationManager::class,
+//            TransactionsRelationManager::class
 
 
         ];
