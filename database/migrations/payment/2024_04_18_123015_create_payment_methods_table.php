@@ -16,13 +16,20 @@ return new class extends Migration {
             $table->string('provider')->comment(
                 'The provider of the payment method, e.g., Stripe, PayPal. This helps identify which payment service is used.'
             );
-            $table->json('configurations')->nullable()->comment(
+            $table->text('configurations')->nullable()->comment(
                 'A JSON column to store specific configuration settings for each payment method, such as API keys, secrets, etc.'
             );
             $table->boolean('is_active')->default(true)->comment(
                 'A boolean flag to indicate whether the payment method is active and should be available for use.'
             );
+            $table->boolean('is_sandbox')->default(true)->comment(
+                'A boolean flag to indicate whether the payment method is sandbox.'
+            );
+            $table->bigInteger('country_id')->comment('Foreign key linking to the generic_countries table.');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('country_id')->references('id')->on('generic_countries');
         });
     }
 

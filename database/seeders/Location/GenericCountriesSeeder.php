@@ -12,7 +12,7 @@ class GenericCountriesSeeder extends Seeder
      */
     public function run(): void
     {
-        if (($open = fopen(storage_path('app/resource/locations/generic_countries.csv'), "r")) !== false) {
+        if (($open = fopen(storage_path('app/resource/locations/generic_countries.csv'), 'r')) !== false) {
             fgetcsv($open);
 
             while (($data = fgetcsv($open)) !== false) {
@@ -30,7 +30,19 @@ class GenericCountriesSeeder extends Seeder
                     'intermediate_region_code' => $data[11],
                 ]);
             }
-
+            GenericCountry::insert([
+                'name' => 'All',
+                'alpha_2' => 'All',
+                'alpha_3' => 'All',
+                'country_code' => 'All',
+                'iso_3166_2' => 'All',
+                'region' => 'All',
+                'sub_region' => 'All',
+                'intermediate_region' => 'All',
+                'region_code' => 'All',
+                'sub_region_code' => 'All',
+                'intermediate_region_code' => 'All',
+            ]);
             fclose($open);
         }
     }

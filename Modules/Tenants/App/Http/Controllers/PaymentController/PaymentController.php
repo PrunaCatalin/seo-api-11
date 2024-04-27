@@ -40,9 +40,8 @@ class PaymentController extends Controller
     {
         if ($checkoutRequest->validated()) {
             $checkoutPlan = SubscriptionPlan::find($checkoutRequest->planId);
-            $stripePlans = Cache::remember('stripe_plans', 3600, function () {
-                return $this->stripeService->getAllProducts();
-            });
+            $stripePlans = $this->stripeService->getAllProducts();
+
             if (isset($stripePlans->data) && $checkoutPlan) {
                 try {
                     $customer = $this->customerService->find(id: auth('customer')->user()->id);
@@ -57,6 +56,7 @@ class PaymentController extends Controller
                                     'success_url' => 'http://' . $domain->domain . '/v1/payment/success',
                                     'cancel_url' => 'http://' . $domain->domain . '/v1/payment/failed',
                                 ]);
+
                             return response()->json(data: [
                                 'status' => 'success',
                                 'response' => $checkout

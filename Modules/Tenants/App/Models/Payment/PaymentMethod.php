@@ -12,14 +12,20 @@ namespace Modules\Tenants\App\Models\Payment;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
+use Modules\Tenants\App\Models\Location\GenericCountry;
 
 class PaymentMethod extends Model
 {
-    protected $fillable = ['name', 'provider', 'configurations', 'is_active'];
+    protected $fillable = ['name', 'provider', 'configurations', 'is_active', 'is_sandbox', 'country_id'];
 
     protected $casts = [
         'configurations' => 'array',
     ];
+
+    public function genericCountry()
+    {
+        return $this->belongsTo(GenericCountry::class, 'country_id');
+    }
 
     public function getConfigurationsAttribute($value)
     {

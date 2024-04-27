@@ -26,7 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'identifyTenant' => IdentifyTenant::class,
             'check-account-status' => CheckAccountStatusMiddleware::class
         ]);
-    })
+    })->withEvents(discover: [
+        __DIR__ . '/../Modules/Tenants/App/Listeners',
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         //
         //Log::channel('slack')->alert('SeoApi Exceptions', (array)$exceptions);

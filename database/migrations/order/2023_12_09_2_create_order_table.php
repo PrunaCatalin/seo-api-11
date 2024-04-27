@@ -20,7 +20,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('customer_company_id')->nullable()->comment(
                 'Optional foreign key linking to the customer_companies table.'
             );
-            $table->unsignedBigInteger('shipment_id')->comment('Foreign key linking to the order_shipments table.');
             $table->string('status')->comment('The status of the order.');
             $table->decimal('total_price', 10, 2)->comment('The total price of the order.');
             $table->timestamps();
@@ -29,7 +28,6 @@ return new class extends Migration {
             );
 
             $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('shipment_id')->references('id')->on('order_shipments');
             $table->foreign('customer_company_id')->references('id')->on('customer_companies');
         });
     }

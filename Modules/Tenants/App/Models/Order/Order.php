@@ -59,15 +59,7 @@ class Order extends Model
     {
         return $this->belongsTo(CustomerCompany::class, 'customer_company_id');
     }
-
-    /**
-     * Get the order's products.
-     */
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'order_products')
-            ->withPivot('quantity', 'price_per_unit');
-    }
+    
 
     /**
      * Get the order's shipment details.

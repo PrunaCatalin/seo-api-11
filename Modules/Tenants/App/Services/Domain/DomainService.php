@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Modules\Tenants\App\Contracts\CrudMicroService;
 use Modules\Tenants\App\Enums\Domain\DomainServiceError;
 use Modules\Tenants\App\Exceptions\ServiceException;
-use Modules\Tenants\App\Models\Tenants\Domains;
+use Modules\Tenants\App\Models\Tenant\Domains;
 
 class DomainService implements CrudMicroService
 {

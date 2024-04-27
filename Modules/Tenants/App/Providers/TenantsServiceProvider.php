@@ -3,8 +3,10 @@
 namespace Modules\Tenants\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
+use Modules\Tenants\App\Listeners\StripeEvent;
 use Modules\Tenants\App\Models\Customer\Customer;
 
 class TenantsServiceProvider extends ServiceProvider
