@@ -17,6 +17,9 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id()->comment('The primary key of the table.');
             $table->unsignedBigInteger('customer_id')->comment('Foreign key linking to the customers table.');
+            $table->unsignedBigInteger('payment_method_id')->comment(
+                'Foreign key linking to the payment_method table.'
+            );
             $table->unsignedBigInteger('customer_company_id')->nullable()->comment(
                 'Optional foreign key linking to the customer_companies table.'
             );
@@ -28,6 +31,7 @@ return new class extends Migration {
             );
 
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('payment_method_id')->references('id')->on('payment_methods');
             $table->foreign('customer_company_id')->references('id')->on('customer_companies');
         });
     }

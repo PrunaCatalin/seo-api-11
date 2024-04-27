@@ -11,8 +11,11 @@
 namespace Modules\Tenants\App\Services\Payment;
 
 use Modules\Tenants\App\Contracts\PaymentGateway;
+use Modules\Tenants\App\Contracts\PaymentProvider;
+use Modules\Tenants\App\Models\Customer\Customer;
+use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
 
-class PaypalPaymentGateway implements PaymentGateway
+class PaypalPaymentGateway implements PaymentProvider
 {
 
     public function charge($amount)
@@ -23,5 +26,10 @@ class PaypalPaymentGateway implements PaymentGateway
     public function refund($transactionId)
     {
         // TODO: Implement refund() method.
+    }
+
+    public function processPayment($requestData, Customer $customer, SubscriptionPlan $subscriptionPlan)
+    {
+        // TODO: Implement processPayment() method.
     }
 }

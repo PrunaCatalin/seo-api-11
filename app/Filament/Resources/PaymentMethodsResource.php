@@ -38,8 +38,7 @@ class PaymentMethodsResource extends Resource
                 //
                 TextInput::make('name')
                     ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+                    ->maxLength(255),
                 TextInput::make('provider')
                     ->required()
                     ->maxLength(255)

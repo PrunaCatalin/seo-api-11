@@ -18,6 +18,7 @@ class CheckoutRequest extends FormRequest
     {
         return [
             'planId' => ['required', 'int'],
+            'paymentMethodId' => ['required', 'int'],
             'frequency' => ['required', 'string', 'in:year,month'],
         ];
     }

@@ -16,7 +16,15 @@ use Modules\Tenants\App\Models\Location\GenericCountry;
 
 class PaymentMethod extends Model
 {
-    protected $fillable = ['name', 'provider', 'configurations', 'is_active', 'is_sandbox', 'country_id'];
+    protected $fillable = [
+        'name',
+        'provider',
+        'configurations',
+        'is_active',
+        'is_sandbox',
+        'country_id',
+        'payment_method_id'
+    ];
 
     protected $casts = [
         'configurations' => 'array',
@@ -27,6 +35,11 @@ class PaymentMethod extends Model
         return $this->belongsTo(GenericCountry::class, 'country_id');
     }
 
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+    }
+
     public function getConfigurationsAttribute($value)
     {
         return json_decode(Crypt::decrypt($value), true);
@@ -35,5 +48,10 @@ class PaymentMethod extends Model
     public function setConfigurationsAttribute($value)
     {
         $this->attributes['configurations'] = Crypt::encrypt(json_encode($value));
+    }
+
+    public function scopeisActive()
+    {
+        return $this->where('is_active', 1);
     }
 }

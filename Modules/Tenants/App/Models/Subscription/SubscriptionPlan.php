@@ -61,6 +61,7 @@ class SubscriptionPlan extends Model
                 ->where('is_demo', true);
         });
     }
+    
 
     public function scopeIsActive()
     {

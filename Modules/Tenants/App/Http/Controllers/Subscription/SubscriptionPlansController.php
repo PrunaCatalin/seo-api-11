@@ -13,6 +13,7 @@ namespace Modules\Tenants\App\Http\Controllers\Subscription;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Modules\Tenants\App\Models\Payment\PaymentMethod;
 use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
 
 class SubscriptionPlansController extends Controller
@@ -28,10 +29,19 @@ class SubscriptionPlansController extends Controller
 
         $customer = auth('sanctum')->user()->id;
         $plans = SubscriptionPlan::isActive()->hasNeverBeenDemoForCustomer($customer)->with('details')->get();
+        $paymentMethods = PaymentMethod::isActive()->get()->map(function ($paymentMethod) {
+            return [
+                'label' => $paymentMethod->name,
+                // Schimbă 'name' cu numele coloanei din baza de date pe care vrei să-l folosești pentru etichetă
+                'value' => $paymentMethod->id,
+                // Schimbă 'id' cu numele coloanei din baza de date pe care vrei să-l folosești pentru valoare
+            ];
+        })->toArray();
 
         return response()->json([
             'status' => 'success',
-            'response' => $plans
+            'response' => $plans,
+            'payment_methods' => $paymentMethods
         ]);
     }
 

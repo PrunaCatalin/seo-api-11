@@ -6,4 +6,5 @@ return [
     'company_location' => env('COMPANY_LOCATION'),
     'company_phone' => env('COMPANY_PHONE'),
     'company_vat' => env('COMPANY_VAT'),
+    'company_email' => env('COMPANY_EMAIL'),
 ];
