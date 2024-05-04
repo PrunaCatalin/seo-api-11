@@ -15,3 +15,7 @@ Route::get('clear-cache', function () {
 
     return 'Cache is cleared';
 });
+
+Route::get('/login', function () {
+    return response()->json(['success' => false], 401);
+})->name('login');

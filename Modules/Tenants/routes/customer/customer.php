@@ -21,11 +21,12 @@ use Modules\Tenants\App\Http\Controllers\Customer\CustomerController;
 use Modules\Tenants\App\Http\Controllers\Customer\WalletController;
 
 Route::name('customer.')->group(function () {
-    //customer
-    Route::get('details', [CustomerController::class, 'info'])->name('view.details');
     //Profile
-    Route::patch('profile/update', [CustomerController::class, 'updateProfile'])->name('action.profileUpdate');
+    Route::get('profile/info', [CustomerController::class, 'info'])->name('view.info');
     Route::post('profile/addresses', [CustomerController::class, 'addresses'])->name('view.addresses');
+    Route::post('profile/companies', [CustomerController::class, 'companies'])->name('view.companies');
+
+    Route::patch('profile/update', [CustomerController::class, 'updateProfile'])->name('action.profileUpdate');
 
     //contact
     Route::post('contact', [CustomerController::class, 'sendContact'])->name('action.contact');

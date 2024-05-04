@@ -16,7 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Tenants\App\Models\Currency\Currency;
 use Modules\Tenants\App\Models\Customer\Customer;
 use Modules\Tenants\App\Models\Customer\CustomerCompany;
-use Modules\Tenants\App\Models\Product\Product;
+use Modules\Tenants\App\Models\Payment\PaymentMethod;
+use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
+use Ramsey\Uuid\Uuid;
 
 class Order extends Model
 {
@@ -27,14 +29,29 @@ class Order extends Model
      *
      * @var array
      */
+    protected $casts = [
+        'internal_id' => 'string',
+    ];
     protected $fillable = [
+        'internal_id',
         'customer_id',
         'currency_id',
         'shipment_id',
         'customer_company_id',
+        'product_id',
+        'subscription_id',
+        'payment_method_id',
         'status',
-        'total_price'
+        'amount'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($order) {
+            $order->internal_id = Uuid::uuid4()->toString();
+        });
+    }
 
     /**
      * Get the customer associated with the order.
@@ -59,7 +76,16 @@ class Order extends Model
     {
         return $this->belongsTo(CustomerCompany::class, 'customer_company_id');
     }
-    
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(SubscriptionPlan::class, 'subscription_id');
+    }
 
     /**
      * Get the order's shipment details.

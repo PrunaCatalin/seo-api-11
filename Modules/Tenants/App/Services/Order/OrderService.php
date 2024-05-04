@@ -11,6 +11,9 @@
 namespace Modules\Tenants\App\Services\Order;
 
 use Modules\Tenants\App\Contracts\CrudMicroService;
+use Modules\Tenants\App\Enums\Order\OrderStatus;
+use Modules\Tenants\App\Models\Customer\Customer;
+use Modules\Tenants\App\Models\Order\Order;
 
 class OrderService implements CrudMicroService
 {
@@ -31,5 +34,46 @@ class OrderService implements CrudMicroService
         // TODO: Implement delete() method.
     }
 
+    /**
+     * @param Customer|null $customer
+     * @return Order
+     */
+    public function totalStatsPending(?Customer $customer)
+    {
+        return Order::where(function ($q) use ($customer) {
+            if ($customer) {
+                $q->where('customer_id', $customer->id);
+            }
+            $q->where('status', OrderStatus::Pending);
+        })->sum('amount');
+    }
+
+    /**
+     * @param Customer|null $customer
+     * @return Order
+     */
+    public function totalStatsCompleted(?Customer $customer)
+    {
+        return Order::where(function ($q) use ($customer) {
+            if ($customer) {
+                $q->where('customer_id', $customer->id);
+            }
+            $q->where('status', OrderStatus::Completed);
+        })->sum('amount');
+    }
+
+    /**
+     * @param Customer|null $customer
+     * @return Order
+     */
+    public function totalStatsCancel(?Customer $customer)
+    {
+        return Order::where(function ($q) use ($customer) {
+            if ($customer) {
+                $q->where('customer_id', $customer->id);
+            }
+            $q->where('status', OrderStatus::Cancelled);
+        })->sum('amount');
+    }
 
 }

@@ -38,7 +38,7 @@ class WalletService implements CrudMicroService
      * @param Customer $customer
      * @return CustomerSubscriptionPlan
      */
-    public function getWallet(Customer $customer): SubscriptionPlan
+    public function getWallet(Customer $customer): ?SubscriptionPlan
     {
         return $customer->currentPlan();
     }

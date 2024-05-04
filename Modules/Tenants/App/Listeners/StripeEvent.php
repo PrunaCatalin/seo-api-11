@@ -35,10 +35,8 @@ class StripeEvent
             // Let's find the relevant user/billable
             $stripeCustomerId = $event->payload['data']['object']['customer'];
             $billable = Cashier::findBillable($stripeCustomerId);
-
             // Get the Laravel\Cashier\Invoice object
             $invoice = $billable->findInvoice($event->payload['data']['object']['id']);
-
             // Now we can send the invoice!
             Mail::to($billable)->send(new InvoiceFinalized($invoice));
             //register invoice on system
@@ -75,6 +73,7 @@ class StripeEvent
                 new AdminPaymentDisputedAlarm($data, $customer, 'Stripe')
             );
         } elseif ($type === 'invoice.paid') {
+            //todo implement automatic order after payed
             Log::info('Invoice payment invoice.paid we need credit customer');
         } elseif ($type === 'customer.subscription.deleted') {
             Log::info(

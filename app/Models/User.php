@@ -52,8 +52,7 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
         ];
     }
-
-
+  
     public function queues()
     {
         return $this->belongsToMany(Queue::class);

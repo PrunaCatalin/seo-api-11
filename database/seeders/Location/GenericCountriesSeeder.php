@@ -32,7 +32,7 @@ class GenericCountriesSeeder extends Seeder
             }
             GenericCountry::insert([
                 'name' => 'All',
-                'alpha_2' => 'All',
+                'alpha_2' => 'AL',
                 'alpha_3' => 'All',
                 'country_code' => 'All',
                 'iso_3166_2' => 'All',

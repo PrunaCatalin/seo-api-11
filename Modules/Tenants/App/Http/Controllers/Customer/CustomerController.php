@@ -20,9 +20,11 @@ namespace Modules\Tenants\App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Modules\Tenants\App\Http\Requests\Customer\AddressRequest;
 use Modules\Tenants\App\Http\Requests\Customer\ContactRequest;
 use Modules\Tenants\App\Http\Requests\Customer\UpdateProfileRequest;
 use Modules\Tenants\App\Models\Customer\Customer;
+use Modules\Tenants\App\Services\Customer\CustomerCompanyService;
 use Modules\Tenants\App\Services\Customer\CustomerContactService;
 use Modules\Tenants\App\Services\Customer\CustomerService;
 use Modules\Tenants\App\Exceptions\ServiceException;
@@ -31,7 +33,8 @@ class CustomerController extends Controller
 {
     public function __construct(
         private readonly CustomerService $customerService,
-        private readonly CustomerContactService $customerContactService
+        private readonly CustomerContactService $customerContactService,
+        private readonly CustomerCompanyService $customerCompanyService,
     ) {
     }
 
@@ -41,7 +44,7 @@ class CustomerController extends Controller
             $customer = $this->customerService->find(id: auth('customer')->user()->id);
             return response()->json(data: [
                 'status' => 'success',
-                'info' => $customer
+                'data' => $customer
             ]);
         } catch (ServiceException $e) {
             return response()->json(data: [
@@ -53,6 +56,25 @@ class CustomerController extends Controller
 
     public function addresses()
     {
+    }
+
+    public function companies(AddressRequest $addressRequest)
+    {
+        try {
+            $addresses = $this->customerCompanyService->findAll(
+                customerId: auth('customer')->user()->id,
+                data: $addressRequest->validated()
+            );
+            return response()->json(data: [
+                'status' => 'success',
+                'list' => $addresses
+            ]);
+        } catch (ServiceException $e) {
+            return response()->json(data: [
+                'status' => false,
+                'errors' => $e->getMessage()
+            ]);
+        }
     }
 
     public function updateProfile(UpdateProfileRequest $updateProfileRequest)

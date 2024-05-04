@@ -13,6 +13,7 @@ use Database\Seeders\Customer\CustomerSubscriptionPlanTableSeeder;
 use Database\Seeders\Location\GenericCitiesSeeder;
 use Database\Seeders\Location\GenericCountiesSeeder;
 use Database\Seeders\Location\GenericCountriesSeeder;
+use Database\Seeders\Payment\PaymentMethodSeeder;
 use Database\Seeders\Subscription\SubscriptionPlanDetailsTableSeeder;
 use Database\Seeders\Subscription\SubscriptionPlansTableSeeder;
 use Database\Seeders\Tenant\TenantConfigurationSeeder;
@@ -57,6 +58,7 @@ class DatabaseSeeder extends Seeder
             SubscriptionPlansTableSeeder::class,
             SubscriptionPlanDetailsTableSeeder::class,
             CustomerSubscriptionPlanTableSeeder::class,
+            PaymentMethodSeeder::class,
         ]);
     }
 }

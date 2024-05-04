@@ -22,6 +22,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'description' => 'A Standard subscription plan',
                 'rate' => 9.9997,
                 'is_active' => 1,
+                'is_demo' => 0,
                 'is_popular' => 0,
             ],
             [
@@ -32,6 +33,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'description' => 'A Advanced subscription plan',
                 'rate' => 26.67,
                 'is_active' => 1,
+                'is_demo' => 0,
                 'is_popular' => 1,
             ],
             [
@@ -42,6 +44,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'description' => 'A Executive subscription plan',
                 'rate' => 50,
                 'is_active' => 1,
+                'is_demo' => 0,
                 'is_popular' => 0,
             ],
             [
@@ -52,6 +55,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'description' => 'A Demo subscription plan',
                 'rate' => 0,
                 'is_active' => 1,
+                'is_demo' => 1,
                 'is_popular' => 0,
             ],
         ]);

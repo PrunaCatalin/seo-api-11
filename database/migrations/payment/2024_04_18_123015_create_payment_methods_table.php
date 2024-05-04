@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->boolean('is_sandbox')->default(true)->comment(
                 'A boolean flag to indicate whether the payment method is sandbox.'
             );
-            $table->bigInteger('country_id')->comment('Foreign key linking to the generic_countries table.');
+            $table->unsignedBigInteger('country_id')->comment('Foreign key linking to the generic_countries table.');
             $table->timestamps();
             $table->softDeletes();
 

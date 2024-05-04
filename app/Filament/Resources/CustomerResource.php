@@ -33,7 +33,7 @@ use Modules\Tenants\App\Services\Subscription\SubscriptionService;
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
-    protected static ?string $navigationGroup = 'Customer';
+    protected static ?string $navigationGroup = 'Customers';
     protected static ?string $navigationLabel = 'List Customers';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

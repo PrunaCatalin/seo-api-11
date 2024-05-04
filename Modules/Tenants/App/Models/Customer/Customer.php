@@ -97,9 +97,14 @@ class Customer extends Authentication
         return $this->hasMany(CustomerAddress::class);
     }
 
-    public function customerCompany()
+    public function customerCompanies()
     {
-        return $this->hasOne(CustomerCompany::class);
+        return $this->hasMany(CustomerCompany::class, 'customer_id');
+    }
+
+    public function customerTerms()
+    {
+        return $this->hasMany(CustomerTerm::class, 'customer_id');
     }
 
     public function customerDetails()

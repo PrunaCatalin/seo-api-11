@@ -92,7 +92,7 @@ class CustomerService implements CrudMicroService
      */
     public function find(int $id)
     {
-        $user = Customer::with(['customerDetails'])->find($id);
+        $user = Customer::with(['customerDetails', 'customerTerms'])->find($id);
         if (!$user) {
             throw new ServiceException('Customer is not found', []);
         }
