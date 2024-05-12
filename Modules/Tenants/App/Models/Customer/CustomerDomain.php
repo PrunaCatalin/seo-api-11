@@ -11,11 +11,13 @@
 
 namespace Modules\Tenants\App\Models\Customer;
 
+use App\Models\Scopes\TenantScope;
 use Database\Factories\CustomerDomainFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Tenants\App\Models\Stats\SessionDataGoogle;
 
 class CustomerDomain extends Model
@@ -56,6 +58,12 @@ class CustomerDomain extends Model
         return CustomerDomainFactory::new();
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(app(TenantScope::class));
+    }
+
     /**
      * Get the customer that owns the domain.
      *
@@ -67,6 +75,7 @@ class CustomerDomain extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
 
     public function sessionData()
     {

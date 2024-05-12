@@ -18,6 +18,7 @@ return new class extends Migration {
                 'Foreign key linking to the subscription_plans table.'
             );
             $table->boolean('is_active')->default(true)->comment('Is active or not');
+            $table->integer('no_domains')->default(0)->comment('Max domains / subscription plan');
             $table->enum('status', [
                 SubscriptionStatus::ACTIVE->value,
                 SubscriptionStatus::PENDING->value,

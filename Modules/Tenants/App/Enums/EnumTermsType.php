@@ -10,11 +10,11 @@
 
 namespace Modules\Tenants\App\Enums;
 
-enum EnumTermsType
+enum EnumTermsType: string
 {
-    public const SMS = 'sms';
-    public const EMAIL = 'email';
-    public const TERMS_AND_CONDITIONS = 'terms';
+    case SMS = 'sms';
+    case EMAIL = 'email';
+    case TERMS_AND_CONDITIONS = 'terms';
 
 
 }

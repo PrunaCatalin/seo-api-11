@@ -43,6 +43,7 @@ class CustomerCompanyService implements CrudMicroService
         $customer = Customer::find($customerId);
         if ($customer) {
             return $customer->customerCompanies()
+                ->with('country')
                 ->paginate(
                     perPage: $data['perPage'] ?? 10,
                     pageName: 'customerCompanies',

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CustomerCompanyRelationManager extends RelationManager
 {
-    protected static string $relationship = 'customerCompany';
+    protected static string $relationship = 'customerCompanies';
     protected static ?string $title = 'Companies';
 
     public function form(Form $form): Form
@@ -24,25 +24,14 @@ class CustomerCompanyRelationManager extends RelationManager
             ->schema([
                 Grid::make()->schema([
                     Hidden::make('city_id')->default(1),
-                    Hidden::make('county_id')->default(1),
+                    Hidden::make('country_id')->default(1),
                     TextInput::make('company_name')
                         ->required()
                         ->maxLength(255),
-                    TextInput::make('prefix_code')->default('NA')
+
+                    TextInput::make('identifier')->default('0')
                         ->required()
                         ->maxLength(255),
-                    TextInput::make('cui_code')->default('0')
-                        ->required()
-                        ->maxLength(255),
-                    TextInput::make('commerce_reg_letter')->default('NA')
-                        ->required()
-                        ->maxLength(255),
-                    TextInput::make('county_code')->default('NA')
-                        ->required()
-                        ->maxLength(255),
-                    TextInput::make('company_year')
-                        ->numeric()
-                        ->required(),
                     TextInput::make('bank_name')
                         ->required()
                         ->maxLength(255),
@@ -63,6 +52,7 @@ class CustomerCompanyRelationManager extends RelationManager
             ->recordTitleAttribute('Customer Company')
             ->columns([
                 Tables\Columns\TextColumn::make('company_name')->searchable(isIndividual: true),
+                Tables\Columns\TextColumn::make('country.name')->searchable(isIndividual: true),
                 Tables\Columns\TextColumn::make('bank_name')->searchable(isIndividual: true),
                 Tables\Columns\TextColumn::make('iban_account')->searchable(isIndividual: true),
                 Tables\Columns\TextColumn::make('created_at')->searchable(isIndividual: true),

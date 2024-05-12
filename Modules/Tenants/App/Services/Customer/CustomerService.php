@@ -27,6 +27,7 @@ use Modules\Tenants\App\Emails\CustomerResetPassword;
 use Modules\Tenants\App\Enums\Customer\CustomerAccountStatus;
 use Modules\Tenants\App\Exceptions\ServiceException;
 use Modules\Tenants\App\Models\Customer\Customer;
+use Modules\Tenants\App\Models\Customer\CustomerTerm;
 
 class CustomerService implements CrudMicroService
 {
@@ -47,34 +48,52 @@ class CustomerService implements CrudMicroService
      * @inheritDoc
      * @throws ServiceException
      */
-    public function update(array $data, int $customerId = 0, string $type = 'profile')
+    public function syncInfo(array $data, int $customerId = 0)
     {
         try {
             $customer = $this->find($customerId);
-            if ($type == 'profile') {
-                return $customer->customerDetails->update($data);
-            } else {
-                if ($type == 'addresses') {
-                    foreach ($data as $addressData) {
-                        if (isset($addressData['id'])) {
-                            $address = $customer->customerAddresses()->find($addressData['id']);
-                            if ($address) {
-                                $address->update($addressData);
-                            } else {
-                                return response()->json(['message' => 'Address not found'], 404);
-                            }
-                        } else {
-                            $customer->customerAddresses()->create($addressData);
-                        }
+            if ($data['type'] == 'profile') {
+                if (!$data['isNewUser']) {
+                    $customer->customerDetails->update($data);
+                } else {
+                    $customer = Customer::create($data);
+                    if (!$customer) {
+                        throw new ServiceException('Something is wrong', []);
+                    }
+                    $customer->customerDetails->create($data);
+                }
+                $this->updateTerms(data: $data, customerId: $customer->id);
+            } elseif ($data['type'] == 'addresses') {
+                if (isset($data['address_id']) && is_numeric($data['address_id'])) {
+                    $address = $customer->customerAddresses()->find($data['address_id']);
+                    if ($address) {
+                        $address->update($data);
+                    } else {
+                        throw new ServiceException('Address not found', []);
                     }
                 } else {
+                    $customer->customerAddresses()->create($data);
                 }
+            } else {
+                throw new ServiceException('Unknown type', []);
             }
         } catch (ServiceException $exception) {
-            throw new ServiceException('Customer is not found', []);
+            throw new ServiceException($exception->getMessage(), []);
         }
+    }
 
-        return false;
+    private function updateTerms(array $data, int $customerId): void
+    {
+        foreach ($data['terms'] as $term => $value) {
+            $identifyingAttributes = [
+                'customer_id' => $customerId,
+                'type' => $term
+            ];
+            $valuesToUpdate = [
+                'checked' => (int)$value
+            ];
+            CustomerTerm::updateOrCreate($identifyingAttributes, $valuesToUpdate);
+        }
     }
 
     /**
@@ -110,27 +129,23 @@ class CustomerService implements CrudMicroService
         )->first();
         if (!$user) {
             throw new ServiceException('Email is not found', []);
+        } elseif ($user->account_status == CustomerAccountStatus::BLOCKED->value) {
+            throw new ServiceException('Account is blocked', []);
+        } elseif ($user->account_status == CustomerAccountStatus::PENDING->value) {
+            throw new ServiceException('Account need to be activated', []);
         } else {
-            if ($user->account_status == CustomerAccountStatus::BLOCKED->value) {
-                throw new ServiceException('Account is blocked', []);
+            $user->nameLetters = 'N/A';
+            if (preg_match_all('/(?<=\s|^)\w/iu', ucwords(strtolower($user->name)), $matches)) {
+                $user->nameLetters = implode('', $matches[0]);
+            }
+            if (Hash::check($data['password'], $user->password)) {
+                $user->tokens()->where('tokenable_id', $user->id)->delete();
+                // cleanup old tokens
+                $user->token = $user->createAuthToken('WD-Auth')->plainTextToken;
+                $user->current_plan = $user->currentPlan();
+                return $user;
             } else {
-                if ($user->account_status == CustomerAccountStatus::PENDING->value) {
-                    throw new ServiceException('Account need to be activated', []);
-                } else {
-                    $user->nameLetters = 'N/A';
-                    if (preg_match_all('/(?<=\s|^)\w/iu', ucwords(strtolower($user->name)), $matches)) {
-                        $user->nameLetters = implode('', $matches[0]);
-                    }
-                    if (Hash::check($data['password'], $user->password)) {
-                        $user->tokens()->where('tokenable_id', $user->id)->delete();
-                        // cleanup old tokens
-                        $user->token = $user->createAuthToken('WD-Auth')->plainTextToken;
-                        $user->current_plan = $user->currentPlan();
-                        return $user;
-                    } else {
-                        throw new ServiceException('Email password is wrong', []);
-                    }
-                }
+                throw new ServiceException('Email password is wrong', []);
             }
         }
     }
@@ -177,5 +192,10 @@ class CustomerService implements CrudMicroService
             return true;
         }
         return false;
+    }
+
+    public function update(array $data)
+    {
+        // TODO: Implement update() method.
     }
 }

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Tenants\App\Models\Location\GenericCity;
+use Modules\Tenants\App\Models\Location\GenericCountry;
 use Modules\Tenants\App\Models\Location\GenericCounty;
 
 /**
@@ -49,21 +50,15 @@ class CustomerCompany extends Model
 
     protected $casts = [
         'customer_id' => 'int',
-        'city_id' => 'int',
-        'county_id' => 'int',
-        'cui_code' => 'int'
+        'country_id' => 'int',
     ];
 
     protected $fillable = [
         'customer_id',
-        'city_id',
-        'county_id',
+        'country_id',
         'company_name',
-        'prefix_code',
-        'cui_code',
-        'commerce_reg_letter',
-        'county_code',
-        'company_year',
+        'identifier',
+        'swift',
         'bank_name',
         'iban_account',
         'company_address'
@@ -74,14 +69,9 @@ class CustomerCompany extends Model
         return CustomerCompanyFactory::new();
     }
 
-    public function generic_city()
+    public function country()
     {
-        return $this->belongsTo(GenericCity::class, 'city_id');
-    }
-
-    public function generic_county()
-    {
-        return $this->belongsTo(GenericCounty::class, 'county_id');
+        return $this->hasOne(GenericCountry::class, 'id', 'country_id');
     }
 
     public function customer()

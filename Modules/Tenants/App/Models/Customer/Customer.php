@@ -142,7 +142,7 @@ class Customer extends Authentication
     {
         return $this->belongsToMany(SubscriptionPlan::class, 'customer_subscription_plan')
             ->using(CustomerSubscriptionPlan::class)
-            ->withTimestamps()->withPivot(['frequency', 'ended_at', 'status']);
+            ->withTimestamps()->withPivot(['frequency', 'ended_at', 'status', 'no_domains']);
     }
 
 

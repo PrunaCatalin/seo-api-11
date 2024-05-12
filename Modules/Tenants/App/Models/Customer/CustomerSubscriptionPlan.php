@@ -18,7 +18,7 @@ class CustomerSubscriptionPlan extends Pivot
 {
     // Define the table if it's not the default naming convention
     protected $table = 'customer_subscription_plan';
-    protected $fillable = ['is_active', 'frequency', 'ended_at', 'status'];
+    protected $fillable = ['is_active', 'no_domains', 'frequency', 'ended_at', 'status'];
     protected $hidden = ['customer_id'];
     protected $casts = [
         'ended_at' => 'datetime'

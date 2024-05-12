@@ -19,9 +19,9 @@ return new class extends Migration {
             $table->enum(
                 'type',
                 [
-                    EnumTermsType::SMS,
-                    EnumTermsType::EMAIL,
-                    EnumTermsType::TERMS_AND_CONDITIONS,
+                    EnumTermsType::SMS->value,
+                    EnumTermsType::EMAIL->value,
+                    EnumTermsType::TERMS_AND_CONDITIONS->value,
                 ]
             )->comment('Type of terms');
             $table->boolean('checked')->default(false)->comment('0 -> unchecked , 1 -> checked');
