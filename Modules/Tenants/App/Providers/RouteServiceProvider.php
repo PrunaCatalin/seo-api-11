@@ -67,6 +67,7 @@ class RouteServiceProvider extends ServiceProvider
                     ->group(function () use ($domain) { // only logged customer
                         require module_path('Tenants', '/routes/subscription/subscription.php');
                         require module_path('Tenants', 'routes/customer/customer.php');
+                        require module_path('Tenants', 'routes/customer/domain.php');
                     });
                 Route::middleware(['auth:sanctum', 'check-account-status'])
                     ->prefix('payments')

@@ -32,15 +32,13 @@ class SubscriptionPlansController extends Controller
         $paymentMethods = PaymentMethod::isActive()->get()->map(function ($paymentMethod) {
             return [
                 'label' => $paymentMethod->name,
-                // Schimbă 'name' cu numele coloanei din baza de date pe care vrei să-l folosești pentru etichetă
                 'value' => $paymentMethod->id,
-                // Schimbă 'id' cu numele coloanei din baza de date pe care vrei să-l folosești pentru valoare
             ];
         })->toArray();
 
         return response()->json([
             'status' => 'success',
-            'response' => $plans,
+            'list' => $plans,
             'payment_methods' => $paymentMethods
         ]);
     }

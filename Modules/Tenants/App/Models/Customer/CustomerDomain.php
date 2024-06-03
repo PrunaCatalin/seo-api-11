@@ -13,11 +13,11 @@ namespace Modules\Tenants\App\Models\Customer;
 
 use App\Models\Scopes\TenantScope;
 use Database\Factories\CustomerDomainFactory;
+use Database\Seeders\Customer\CustomerDomainSettingsSeeder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Tenants\App\Models\Stats\SessionDataGoogle;
 
 class CustomerDomain extends Model
@@ -109,5 +109,9 @@ class CustomerDomain extends Model
             ->get();
     }
 
+    public function domainSettings()
+    {
+        return $this->hasOne(CustomerDomainSettings::class, 'customer_domains_id');
+    }
     // Add any additional relationships or functionality below as needed.
 }

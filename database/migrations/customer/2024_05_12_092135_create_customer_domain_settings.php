@@ -17,7 +17,11 @@ return new class extends Migration {
     {
         Schema::create('customer_domain_settings', function (Blueprint $table) {
             $table->id();
-
+            $table->foreignId('customer_id')->comment('Fk customers.id');
+            $table->foreignId('customer_domains_id')->comment('Fk customer_domains.id');
+            $table->json('countries')->comment('Json list of allowed countries');
+            $table->json('keywords')->comment('Json list of keywords to be used for each domain');
+            $table->json('links')->comment('Json list of links to be used for queues');
 
             $table->timestamps();
         });

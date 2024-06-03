@@ -6,7 +6,6 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Tenants\App\Models\Customer\Customer;
 use Modules\Tenants\App\Models\Customer\CustomerCompany;
-use Modules\Tenants\App\Models\Location\GenericCity;
 use Modules\Tenants\App\Models\Location\GenericCountry;
 
 /**
@@ -19,6 +18,7 @@ class CustomerCompanyFactory extends Factory
     public function definition()
     {
         $randomCountry = GenericCountry::inRandomOrder()->first();
+
         return [
             'customer_id' => Customer::factory(),
             'country_id' => $randomCountry->id,

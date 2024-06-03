@@ -138,6 +138,13 @@ class Customer extends Authentication
         return $this->hasMany(CustomerReferral::class, 'referred_id');
     }
 
+    public function currentPlan()
+    {
+        return $this->subscriptionPlans()
+            ->wherePivot('status', '=', SubscriptionStatus::ACTIVE->value)
+            ->first();
+    }
+
     public function subscriptionPlans()
     {
         return $this->belongsToMany(SubscriptionPlan::class, 'customer_subscription_plan')
@@ -145,11 +152,27 @@ class Customer extends Authentication
             ->withTimestamps()->withPivot(['frequency', 'ended_at', 'status', 'no_domains']);
     }
 
-
-    public function currentPlan()
+    public function expiredPlan()
     {
         return $this->subscriptionPlans()
-            ->wherePivot('status', '=', SubscriptionStatus::ACTIVE->value)
+            ->wherePivot('status', '=', SubscriptionStatus::EXPIRED->value)
+            ->orderBy('pivot_created_at', 'desc')
+            ->first();
+    }
+
+    public function canceledPlan()
+    {
+        return $this->subscriptionPlans()
+            ->wherePivot('status', '=', SubscriptionStatus::CANCELED->value)
+            ->orderBy('pivot_created_at', 'desc')
+            ->first();
+    }
+
+    public function canceledByClientPlan()
+    {
+        return $this->subscriptionPlans()
+            ->wherePivot('status', '=', SubscriptionStatus::CANCELED_BY_CLIENT->value)
+            ->orderBy('pivot_created_at', 'desc')
             ->first();
     }
 

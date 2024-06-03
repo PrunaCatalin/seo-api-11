@@ -38,6 +38,7 @@ class CustomerDomainsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $currentPlan = $this->getOwnerRecord()->currentPlan();
         return $table
             ->recordTitleAttribute('Domains')
             ->columns([
@@ -49,7 +50,11 @@ class CustomerDomainsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->disabled(function () use($currentPlan) {
+                    return !$currentPlan;
+                })->label(function() use($currentPlan) {
+                    return $currentPlan ? "Add Domain" : "Subscription plan is missing";
+                })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

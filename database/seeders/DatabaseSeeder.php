@@ -8,6 +8,7 @@ use Database\Seeders\Customer\CustomerAddressSeeder;
 use Database\Seeders\Customer\CustomerCompanySeeder;
 use Database\Seeders\Customer\CustomerDetailsSeeder;
 use Database\Seeders\Customer\CustomerDomainSeeder;
+use Database\Seeders\Customer\CustomerDomainSettingsSeeder;
 use Database\Seeders\Customer\CustomerSeeder;
 use Database\Seeders\Customer\CustomerSubscriptionPlanTableSeeder;
 use Database\Seeders\Location\GenericCitiesSeeder;
@@ -53,6 +54,7 @@ class DatabaseSeeder extends Seeder
             CustomerCompanySeeder::class,
             CustomerDetailsSeeder::class,
             CustomerDomainSeeder::class,
+            CustomerDomainSettingsSeeder::class
         ]);
         $this->call([
             SubscriptionPlansTableSeeder::class,

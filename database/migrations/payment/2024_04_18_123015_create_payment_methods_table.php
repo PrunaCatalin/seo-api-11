@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('provider')->comment(
                 'The provider of the payment method, e.g., Stripe, PayPal. This helps identify which payment service is used.'
             );
-            $table->text('configurations')->nullable()->comment(
+            $table->longText('configurations')->nullable()->comment(
                 'A JSON column to store specific configuration settings for each payment method, such as API keys, secrets, etc.'
             );
             $table->boolean('is_active')->default(true)->comment(

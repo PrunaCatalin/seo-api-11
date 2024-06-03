@@ -24,6 +24,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'is_active' => 1,
                 'is_demo' => 0,
                 'is_popular' => 0,
+                'max_domains' => 3
             ],
             [
                 'name' => 'Advanced',
@@ -35,6 +36,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'is_active' => 1,
                 'is_demo' => 0,
                 'is_popular' => 1,
+                'max_domains' => 10
             ],
             [
                 'name' => 'Executive',
@@ -46,6 +48,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'is_active' => 1,
                 'is_demo' => 0,
                 'is_popular' => 0,
+                'max_domains' => 20
             ],
             [
                 'name' => 'Demo',
@@ -57,6 +60,7 @@ class SubscriptionPlansTableSeeder extends Seeder
                 'is_active' => 1,
                 'is_demo' => 1,
                 'is_popular' => 0,
+                'max_domains' => 1
             ],
         ]);
     }

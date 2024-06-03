@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->boolean('is_popular')->default(0)->comment('Plan is popular');
             $table->boolean('is_active')->nullable()->comment('Is active or not');
             $table->boolean('is_demo')->default(0)->comment('Is demo or not');
+            $table->integer('max_domains')->default(0)->comment('Max allowed domains');
             $table->timestamps();
             $table->softDeletes();
         });

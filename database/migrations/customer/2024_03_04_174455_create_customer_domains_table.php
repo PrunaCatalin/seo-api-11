@@ -19,7 +19,7 @@ return new class extends Migration {
         Schema::create('customer_domains', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
-            $table->string('domain', 255)->unique();
+            $table->string('domain', 255);
             $table->string('tenant_id')->comment("Fk-> tenants.id");
             $table->timestamps();
             $table->softDeletes();

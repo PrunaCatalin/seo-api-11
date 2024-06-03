@@ -28,6 +28,7 @@ class SubscriptionPlan extends Model
         'is_popular',
         'is_demo',
         'is_active',
+        'max_domains',
         'points_annually',
     ];
 
@@ -61,7 +62,7 @@ class SubscriptionPlan extends Model
                 ->where('is_demo', true);
         });
     }
-    
+
 
     public function scopeIsActive()
     {

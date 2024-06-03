@@ -18,6 +18,7 @@
 
 
 use Modules\Tenants\App\Http\Controllers\Customer\CustomerController;
+use Modules\Tenants\App\Http\Controllers\Customer\DomainController;
 use Modules\Tenants\App\Http\Controllers\Customer\WalletController;
 
 Route::name('customer.')->group(function () {
@@ -27,7 +28,7 @@ Route::name('customer.')->group(function () {
 
     //
     Route::post('companies', [CustomerController::class, 'companies'])->name('view.companies');
-    Route::post('domains', [CustomerController::class, 'domains'])->name('view.domains');
+
 
     Route::post('profile/syncInfo', [CustomerController::class, 'syncInfo'])->name(
         'action.syncInfo'

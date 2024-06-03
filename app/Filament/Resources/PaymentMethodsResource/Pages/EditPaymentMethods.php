@@ -16,4 +16,13 @@ class EditPaymentMethods extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        
+        if (isset($data['configurations'])) {
+            $data['configurations'] = json_encode($data['configurations']);
+        }
+        return $data;
+    }
 }

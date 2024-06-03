@@ -5,7 +5,6 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Tenants\App\Models\Customer\Customer;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @extends Factory<\App\Models\Customer>

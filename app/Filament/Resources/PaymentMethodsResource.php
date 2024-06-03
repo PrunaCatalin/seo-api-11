@@ -33,6 +33,7 @@ class PaymentMethodsResource extends Resource
 
     public static function form(Form $form): Form
     {
+
         return $form
             ->schema([
                 //
@@ -53,7 +54,10 @@ class PaymentMethodsResource extends Resource
                     Radio::make('is_sandbox')->boolean()->default(true)->inline(),
                 ]),
                 Section::make('Configuration')->schema([
-                    KeyValue::make('configurations')->label('')
+                    KeyValue::make('configurations')
+                        ->keyLabel('Key')
+                        ->valueLabel('Value')
+                        ->required(),
                 ])
             ])->columns(2);
     }

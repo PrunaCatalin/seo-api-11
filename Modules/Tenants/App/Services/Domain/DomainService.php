@@ -12,26 +12,6 @@ use Modules\Tenants\App\Models\Tenant\Domains;
 class DomainService implements CrudMicroService
 {
     /**
-     * Find a domain by its ID.
-     *
-     * @param int $domainId The ID of the domain to find.
-     * @return Domains|null Returns the domain if found, or null if not found.
-     * @throws ServiceException if the domain cannot be found.
-     */
-    public function find(int $domainId): ?Domains
-    {
-        $domain = Domains::findOrFail($domainId);
-        if (!$domain) {
-            throw new ServiceException(
-                DomainServiceError::NotFoundOrUpdateError->value,
-                $domain
-            );
-        }
-        // Additional logic can be added here if necessary
-        return $domain;
-    }
-
-    /**
      * List all domains with optional filtering.
      *
      * @param array $data Criteria for filtering the list of domains.
@@ -58,7 +38,6 @@ class DomainService implements CrudMicroService
         // Apply pagination with specified or default values
         return $query->paginate($perPage, '*', 'page', $data['page'] ?? 1);
     }
-
 
     /**
      * Create a new domain.
@@ -90,6 +69,7 @@ class DomainService implements CrudMicroService
                 );
             } else {
                 $domain->save();
+
                 return $domain;
             }
         } else {
@@ -98,6 +78,17 @@ class DomainService implements CrudMicroService
                 $data
             );
         }
+    }
+
+    /**
+     * Checks if the data is valid.
+     *
+     * @param array $data The data to be checked.
+     * @return bool Returns true if the data is valid, false otherwise.
+     */
+    private function isValidData(array $data): bool
+    {
+        return !empty($data['domain']) && !empty($data['domain']['domain']);
     }
 
     /**
@@ -145,28 +136,23 @@ class DomainService implements CrudMicroService
     }
 
     /**
-     * Delete a domain.
+     * Find a domain by its ID.
      *
-     * @param array $data
-     * @throws ServiceException if the domain cannot be deleted.
+     * @param int $domainId The ID of the domain to find.
+     * @return Domains|null Returns the domain if found, or null if not found.
+     * @throws ServiceException if the domain cannot be found.
      */
-    public function delete(array $data): bool
+    public function find(int $domainId): ?Domains
     {
-        if (isset($data['domain']['domain_id'])) {
-            $domain = Domains::find($data['domain']['domain_id']);
-            if ($domain) {
-                DB::transaction(function () use ($domain) {
-                    $domain->delete();
-                });
-                return true;
-            } else {
-                throw new ServiceException(
-                    DomainServiceError::NotFoundForDeletion->value,
-                    $data
-                );
-            }
+        $domain = Domains::findOrFail($domainId);
+        if (!$domain) {
+            throw new ServiceException(
+                DomainServiceError::NotFoundOrUpdateError->value,
+                $domain
+            );
         }
-        return false;
+        // Additional logic can be added here if necessary
+        return $domain;
     }
 
     /**
@@ -208,13 +194,27 @@ class DomainService implements CrudMicroService
     }
 
     /**
-     * Checks if the data is valid.
+     * Delete a domain.
      *
-     * @param array $data The data to be checked.
-     * @return bool Returns true if the data is valid, false otherwise.
+     * @param array $data
+     * @throws ServiceException if the domain cannot be deleted.
      */
-    private function isValidData(array $data): bool
+    public function delete(array $data): bool
     {
-        return !empty($data['domain']) && !empty($data['domain']['domain']);
+        if (isset($data['domain']['domain_id'])) {
+            $domain = Domains::find($data['domain']['domain_id']);
+            if ($domain) {
+                DB::transaction(function () use ($domain) {
+                    $domain->delete();
+                });
+                return true;
+            } else {
+                throw new ServiceException(
+                    DomainServiceError::NotFoundForDeletion->value,
+                    $data
+                );
+            }
+        }
+        return false;
     }
 }

@@ -40,6 +40,8 @@ class SubscriptionPlanResource extends Resource
                             ->numeric()->extraAttributes(['step' => '0.01'])->required(),
                         TextInput::make('points_annually')
                             ->numeric()->extraAttributes(['step' => '0.01'])->required(),
+                        TextInput::make('max_domains')
+                            ->numeric()->required(),
                         Section::make('States')->schema([
                             Forms\Components\Radio::make('is_active')->boolean()->default(false)->inline(),
                             Forms\Components\Radio::make('is_popular')->boolean()->default(false)->inline(),
@@ -62,6 +64,7 @@ class SubscriptionPlanResource extends Resource
                 Tables\Columns\TextColumn::make('points_annually')->searchable(),
                 Tables\Columns\TextColumn::make('description')->searchable(),
                 Tables\Columns\TextColumn::make('rate')->searchable(),
+                Tables\Columns\TextColumn::make('max_domains')->searchable(),
                 Tables\Columns\IconColumn::make('is_popular')->boolean()->searchable(),
                 Tables\Columns\IconColumn::make('is_active')->boolean()->searchable(),
                 Tables\Columns\IconColumn::make('is_demo')->boolean()->searchable(),

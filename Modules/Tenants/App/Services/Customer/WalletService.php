@@ -15,6 +15,7 @@ use Modules\Tenants\App\Exceptions\ServiceException;
 use Modules\Tenants\App\Models\Customer\Customer;
 use Modules\Tenants\App\Models\Customer\CustomerSubscriptionPlan;
 use Modules\Tenants\App\Models\Subscription\SubscriptionPlan;
+use Modules\Tenants\App\Services\Subscription\SubscriptionService;
 
 class WalletService implements CrudMicroService
 {
@@ -58,6 +59,26 @@ class WalletService implements CrudMicroService
 
         $customer->credits += $credits;
         $customer->save();
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    public function addSubscription(Customer $customer, $startPeriod, $endPeriod, $frequency)
+    {
+        //if customer have already an active plan , add to next plan
+        if ($customer->currentPlan()) {
+            $subscriptionService = new SubscriptionService();
+            try {
+                //todo get plan_id from stripe call
+                $subscriptionService->attachPlan($customer, [
+                    'subscription_plan_id' => '',
+                    'frequency' => $frequency
+                ]);
+            } catch (ServiceException $e) {
+                throw new ServiceException($e->getMessage());
+            }
+        }
     }
 
     /**

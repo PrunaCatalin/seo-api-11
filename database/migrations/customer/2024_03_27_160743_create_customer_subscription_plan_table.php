@@ -29,7 +29,7 @@ return new class extends Migration {
             $table->string('frequency')->default('monthly')->comment(
                 'Subscription frequency: monthly or annually'
             );
-            $table->timestamp('ended_at')->comment('Subscription ended');
+            $table->timestamp('ended_at')->useCurrent()->comment('Subscription ended');
             $table->timestamps();
 
             // Define foreign key constraints and add comments for clarity

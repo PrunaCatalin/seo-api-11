@@ -37,7 +37,7 @@ class CustomerController extends Controller
         private readonly CustomerService $customerService,
         private readonly CustomerContactService $customerContactService,
         private readonly CustomerCompanyService $customerCompanyService,
-        private readonly CustomerDomainService $customerDomainService,
+
     ) {
     }
 
@@ -87,29 +87,7 @@ class CustomerController extends Controller
         }
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function domains()
-    {
-        try {
-            $domains = $this->customerDomainService->findAllDomains(
-                customerId: auth('customer')->user()->id
-            );
-            $customer = $this->customerService->find(id: auth('customer')->user()->id);
-            $canAddDomain = $customer->currentPlan();
-            return response()->json(data: [
-                'status' => 'success',
-                'list' => $domains,
-                'canAddDomain' => ($canAddDomain->pivot->no_domains > count($domains)),
-            ]);
-        } catch (ServiceException $e) {
-            return response()->json(data: [
-                'status' => false,
-                'errors' => $e->getMessage()
-            ]);
-        }
-    }
+
 
     /**
      * @param UpdateProfileRequest $updateProfileRequest

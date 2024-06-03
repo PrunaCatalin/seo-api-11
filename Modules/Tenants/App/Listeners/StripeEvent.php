@@ -11,7 +11,9 @@ use Laravel\Cashier\Cashier;
 use Laravel\Cashier\Events\WebhookReceived;
 use Modules\Tenants\App\Emails\AdminPaymentDisputedAlarm;
 use Modules\Tenants\App\Emails\InvoiceFinalized;
+use Modules\Tenants\App\Exceptions\ServiceException;
 use Modules\Tenants\App\Models\Customer\Customer;
+use Modules\Tenants\App\Services\Customer\WalletService;
 
 class StripeEvent
 {
@@ -25,6 +27,7 @@ class StripeEvent
 
     /**
      * Handle the event.
+     * @throws ServiceException
      */
     public function handle(WebhookReceived $event): void
     {
@@ -43,6 +46,19 @@ class StripeEvent
             Log::info('Webhook invoice to the customer', $event->payload);
         } elseif ($type === 'invoice.payment_succeeded') {
             //charge account
+            $walletService = new WalletService();
+            $stripeCustomerId = $event->payload['data']['object']['customer'];
+            $customer = Customer::where('stripe_id', $stripeCustomerId)->first();
+            $credits = round($event->payload['data']['object']['lines']['data']['amount']);
+            $startPeriod = $event->payload['data']['object']['lines']['data']['period']['start'];
+            $endPeriod = $event->payload['data']['object']['lines']['data']['period']['end'];
+            $frequency = $event->payload['data']['object']['lines']['data']['plan']['interval'];
+            try {
+                $walletService->addCredits($customer, $credits);
+                $walletService->addSubscription($customer, $credits, $startPeriod, $endPeriod, $frequency);
+            } catch (ServiceException $exception) {
+                Log::info('Failed to add credit to customer_id [' . $customer->id . '] : ' . $exception->getMessage());
+            }
             Log::info('Invoice payment invoice.payment_succeeded');
         } elseif ($type === 'invoice.created') {
             Log::info('Invoice payment invoice.created');

@@ -8,5 +8,5 @@ use Modules\Tenants\App\Models\Payment\PaymentMethod as TenantPaymentMethod;
 
 class PaymentMethod extends TenantPaymentMethod
 {
-    use HasFactory;
+   
 }

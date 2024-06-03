@@ -13,6 +13,7 @@ namespace Modules\Tenants\App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Controller;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Modules\Tenants\App\Exceptions\ServiceException;
 use Modules\Tenants\App\Factories\PaymentProviderFactory;
 use Modules\Tenants\App\Http\Requests\Payment\CheckoutRequest;
@@ -47,11 +48,18 @@ class PaymentController extends Controller
                 auth('customer')->user(),
                 $checkoutPlan
             );
-
             return $this->handlePaymentResponse($response);
         } catch (ServiceException $e) {
             return $this->respondWithError($e->getMessage());
         }
+    }
+
+    private function respondWithError($message)
+    {
+        return response()->json([
+            'status' => false,
+            'errors' => $message
+        ]);
     }
 
     private function handlePaymentResponse($response)
@@ -64,13 +72,5 @@ class PaymentController extends Controller
         }
 
         return $this->respondWithError($response['message']);
-    }
-
-    private function respondWithError($message)
-    {
-        return response()->json([
-            'status' => false,
-            'errors' => $message
-        ]);
     }
 }

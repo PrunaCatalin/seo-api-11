@@ -26,9 +26,6 @@ class PaymentMethod extends Model
         'payment_method_id'
     ];
 
-    protected $casts = [
-        'configurations' => 'array',
-    ];
 
     public function genericCountry()
     {
@@ -40,18 +37,30 @@ class PaymentMethod extends Model
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
-    public function getConfigurationsAttribute($value)
+    public function getConfigurationsAttribute()
     {
-        return json_decode(Crypt::decrypt($value), true);
+        if (!empty($this->attributes['configurations'])) {
+            $decrypted = Crypt::decrypt($this->attributes['configurations']);
+            $decoded = json_decode($decrypted, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        return [];
     }
+
 
     public function setConfigurationsAttribute($value)
     {
-        $this->attributes['configurations'] = Crypt::encrypt(json_encode($value));
+
+        $this->attributes['configurations'] = Crypt::encrypt($value);
+//        dd($this->attributes);
     }
 
-    public function scopeisActive()
+    public function scopeisActive($query)
     {
-        return $this->where('is_active', 1);
+        return $query->where('is_active', 1);
     }
+
 }
